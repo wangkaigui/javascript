@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="/statics/default/css/weui.min.css">
+    <link rel="stylesheet" href="/statics/default/css/jquery-weui.css">
+    <link rel="stylesheet" href="/statics/default/css/public.css">
+    <link rel="stylesheet" href="/statics/default/css/ui-box.css">
+    <link rel="stylesheet" href="/statics/default/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/statics/default/css/index.css">
+    <link rel="stylesheet" href="/statics/default/css/swiper.css">
+    <title>个人价值</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--分享中心头部-->
+<template file="sharehead.php" />
+<!--积分统计-->
+<div id="xxz">
+    <div class="grjz">
+        <div class="ub ub-ac title ax1">爱心值</div>
+        <div class="stars">
+            <ul class="ub ub-ac">
+                <li class="sw1"><span>0</span></li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+            </ul>
+            <input type="hidden" class="num" value="{$member_info['star1']}" />
+            <div class="divimg" style="display:none;"></div>
+        </div>
+    </div>
+    <div class="grjz">
+        <div class="ub ub-ac title ax2">专心值</div>
+        <div class="stars">
+            <ul class="ub ub-ac">
+                <li class="sw1"><span></span></li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+            </ul>
+            <input type="hidden" class="num" value="{$member_info['star2']}" />
+            <div class="divimg" style="display:none;"></div>
+        </div>
+    </div>
+    <div class="grjz">
+        <div class="ub ub-ac title ax3">恒心值</div>
+        <div class="stars">
+            <ul class="ub ub-ac">
+                <li class="sw1"><span>0</span></li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em ></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+            </ul>
+            <input type="hidden" class="num" value="{$member_info['star3']}" />
+            <div class="divimg" style="display:none;"></div>
+        </div>
+    </div>
+    <div class="grjz">
+        <div class="ub ub-ac title ax4">仁心值</div>
+        <div class="stars">
+            <ul class="ub ub-ac">
+                <li class="sw1"><span>0</span></li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em ></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+                <li class="ub-f1"><div class="small"><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em><em></em></div> </li>
+            </ul>
+            <input type="hidden" class="num" value="{$member_info['star4']}" />
+            <div class="divimg" style="display:none;"></div>
+        </div>
+    </div>
+</div>
+
+
+<!--底部导航-->
+<template file="Content/menu.php" />
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+
+
+</body>
+<script type="text/javascript" src="/statics/default/js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="/statics/default/js/swiper.min.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery-weui.min.js"></script>
+
+<script>
+
+    var xx = $("#xxz").find(".grjz").length;
+    for(var m = 0; m < xx; m++){
+
+        var num = $(".grjz").eq(m).find(".num").val();
+        var n = 6;
+        function addPreZero(num){
+            return ('000000000'+num).slice(-6);
+        }
+        num = addPreZero(num);
+        snum = num.toString(),str = '';
+
+        for(var i = 0; i < snum.length; i++){
+            switch(+snum.charAt(i)){
+                case 0:
+                    str += '<span>0</span>';
+                    break;
+                case 1:
+                    str += '<span>1</span>';
+                    break;
+                case 2:
+                    str += '<span>2</span>';
+                    break;
+                case 3:
+                    str += '<span>3</span>';
+                    break;
+                case 4:
+                    str += '<span>4</span>';
+                    break;
+                case 5:
+                    str += '<span>5</span>';
+                    break;
+                case 6:
+                    str += '<span>6</span>';
+                    break;
+                case 7:
+                    str += '<span>7</span>';
+                    break;
+                case 8:
+                    str += '<span>8</span>';
+                    break;
+                case 9:
+                    str += '<span>9</span>';
+                    break;
+            }
+        }
+
+        $(".grjz").eq(m).find(".divimg").html(str);
+        for(var i=0; i<n; i++){
+            if(i == 0){
+                $(".grjz").eq(m).find("li").eq(0).find("span").text($(".grjz").eq(m).find(".divimg").find("span").eq(0).text());
+            }else{
+                var d = $(".grjz").eq(m).find(".divimg").find("span").eq(i).text();
+                for(var k=0; k<d; k++){
+                    $(".grjz").eq(m).find("li").eq(i).find("em").eq(k).addClass("on");
+                }
+            }
+        };
+
+
+    };
+
+
+
+
+    //alert(document.getElementById('divimg').innerHTML)
+</script>
+
+
+
+
+</html>

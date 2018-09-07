@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>企业介绍</title>
+</head>
+<body ontouchstart >
+
+<!--单篇详情(纯图片)-->
+<div class="imgDetail">
+
+</div>
+
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+function companyGuide(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.companyGuide.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				$(".imgDetail").html(res.data.content.myReplace('/d/file/',API_ROOT+'/d/file/'));
+			}
+		},
+	});
+}companyGuide();
+
+</script>
+
+
+</html>

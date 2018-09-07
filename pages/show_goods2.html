@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>商品详情</title>
+</head>
+
+<body ontouchstart class="bg-gray">
+
+<!--banner-->
+<div class="fybanner swiper-container">
+    <div class="swiper-wrapper" id="swiperid">
+	
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<!--商品信息1-->
+<div class="shoptop">
+    <h4 class="ub" id="titleid"></h4>
+	
+        <div class="ub ub-ae sprice">
+		<!--	
+			<b>复购价：</b>
+			<div class="pr1"><i>&yen;</i>
+				<span id="dis_priceid"></span>
+			</div>
+			&nbsp &nbsp
+		-->
+			<b>价格：</b>
+			<div class="pr1"><i>&yen;</i>
+				<span id="priceid"></span>
+			</div>
+			
+			
+				
+			
+		</div>
+   
+	<div class="ub sm"><span class="ub-f1 kc"><span id="kucunid"></span></span><span><span id="saleid"></span>
+	
+		
+	
+	</span></div>
+</div>
+
+<!--商品详情-->
+<div class="spdetail">
+    <div class="ub ub-ac title">套餐详情</div>
+    <div class="scontent" id="contentid">
+		
+    </div>
+</div>
+
+<!--底部购买-->
+
+<if condition="$issale neq 2">
+
+	<div class="fyfooter">
+		<div class="ub fnav">
+			<div class="fli ub-f1 sc" id="show-toast"><a href="javascript:void(0);" class="ub ub-ac ub-pc"><em class="iconfont">&#xe626;</em><span>收藏</span></a></div>
+						
+			<div class="fli ub-f2 ljgm"><a href="javascript:void(0)" class="ub ub-ac ub-pc" id="buyid">立即购买</a> </div>
+		</div>
+	</div>
+	
+</if>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+//banner
+setTimeout(function(){
+	var swiper = new Swiper('.swiper-container', {
+		pagination: '.swiper-pagination',
+		slidesPerView: 1,
+		paginationClickable: true,
+		loop: true
+	});
+},300)
+
+$("#buyid").click(function(){
+	var pid = getQueryString(window.location.href,'id');
+	var types = getQueryString(window.location.href,'types');
+	if(types!=null && types!='' && types!='undefined'){
+		locationUrl('confirm_order.html?id='+pid+"&luck_id="+types,true);
+	}else{
+		locationUrl('confirm_order.html?id='+pid,true);
+	}
+	
+})
+
+function getProductDetail(){
+	var pid = getQueryString(window.location.href,'id');
+	var types = getQueryString(window.location.href,'types');
+	if(pid==null || pid==''){
+		lay.msg('商品参数不存在');
+		return false;
+	}
+	$('.loading').show();
+	
+	var params = {"pid":pid};
+	
+	if(types!=null && types!='' && types!='undefined'){
+		params['types'] = types;
+	}
+	
+	myHttp({
+		url: urls.getProductDetail.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			
+			$('.loading').hide();
+			if (res.code == 200) {
+				var info = res.data.info;
+				
+				$("#titleid").html(info.title);
+				$("#dis_priceid").html(info.dis_price);
+				$("#priceid").html(info.price);
+				$("#kucunid").html('库存：'+info.stock+'件');
+				
+				var salenum = getQueryString(window.location.href,'id');
+				
+				$("#saleid").html('最近售出：'+info.salenum+'件');
+				
+				if(types!=null && types!='' && types!='undefined'){
+					var news = res.data.newsArr;
+				}else{
+					var news = res.data.info;
+				}
+				$('#contentid').html(news.content.myReplace('/d/file/',API_ROOT+'/d/file/'));
+				var str='';
+				$.each(news.thumbs,function(k,v){
+					str+='<div class="swiper-slide"><a href="javascript:;"><img src="'+API_ROOT+v.url+'" /> </a> </div>';
+				})
+				
+				/*
+				for(var i=0;i<res.data.thumbs;i++){
+					
+				}
+				*/
+				
+				$("#swiperid").html(str);
+				
+			}
+		},
+		
+	});
+}getProductDetail();
+
+	
+$('#confirms').click(function(){
+	var num = 1;
+	if(Number(num)>Number("{$stock}")){
+		$.toast('库存不足','cancel');
+		return false;
+	}
+	
+	var type=2;//goods类型
+	var product_id = "{$id}";
+	$.ajax({
+		type:'post',
+		dataType:'json',
+		url:"{:U('User/actionCart')}",
+		data:{
+			'product_id':product_id,
+			'num':Number(num),
+			'action':'add',
+			'type':type,
+		},
+		success:function(data){
+			if(data.ret==2){
+				//alert('操作成功');
+				//$.toast('加入购车成功');
+				window.location.href="/index.php?m=Center&a=cart";
+			}else{
+				$.toast(data.msg,'cancel');
+			}
+		},
+		error:function(){
+			$.toast('未知错误','cancel');
+		},
+	});
+});
+	
+	
+	function addCart(){
+		
+		$.ajax({
+			type:'post',
+			dataType:'json',
+			url:"{:U('Center/ajaxAddConnect')}",
+			data:{
+				'goods_id':"{$id}",
+				'action':action,
+			},
+			beforeSend:function(){
+				$.showLoading();
+			},
+			success:function(data){
+				$.hideLoading();
+				if(data.ret==2){
+					$.toast(data.msg);
+				}else{
+					$.toast(data.msg,"cancel");
+				}
+				
+			},
+			error:function(){
+				$.toast("请求错误",'cancel');
+			},
+		});
+	
+	}
+   
+
+
+</script>
+
+<script>
+
+   
+</script>
+
+
+</html>

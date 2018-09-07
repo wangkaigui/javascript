@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>我的资料</title>
+</head>
+<body ontouchstart>
+
+<!--我的资料-->
+<div class="datalist">
+    <ul>
+	
+        <li class="ub ub-ac"><h4>头像</h4>
+			<div class="ub-f1 ub ub-pe tximg">
+				<div class="tx">
+					<form enctype="multipart/form-data" id="btnId">
+						<img src="" id="imgid" /> 
+						<input type="file" name="thumbfile" class="inputimg" onchange="ajaxUpload();">
+					</form> 
+				</div>
+			</div> 
+			<em class="iconfont">&#xe625;</em>
+		</li>
+		
+		<input type="hidden" id="thumbfileId" value="">
+        <li class="ub ub-ac"><h4>昵称</h4><input type="text" class="ub-f1" value="" name="nickname" /> <em class="iconfont">&#xe625;</em></li>
+        <li class="ub ub-ac"><h4>手机号码</h4><input type="text" class="ub-f1" name="mobile" value="" /> <em class="iconfont">&#xe625;</em></li>
+        <li class="ub ub-ac"><h4>真实姓名</h4><input type="text" class="ub-f1" name="user_name" value="" /> <em class="iconfont">&#xe625;</em></li>
+        <li class="ub ub-ac"><h4>常住地址</h4><input type="text"  id="start" name="address" class="ub-f1" value="" placeholder="" /> <em class="iconfont">&#xe625;</em></li>
+        <li class="ub ub-ac"><h4>详细地址</h4><input type="text" class="ub-f1" name="district" value="" placeholder="" /> <em class="iconfont">&#xe625;</em></li>
+    
+	</ul>
+	
+</div>
+<div style="width: 100%; height: 3.5rem;"></div>
+
+<a href="javascript:;" class="ub ub-ac ub-pc tjadd">确认修改</a>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/city-picker.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+	
+function getMemberInfo(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getMemberInfo.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data;
+				
+				$("#imgid").attr('src',d.userpic);
+				$("input[name='nickname']").val(d.nickname);
+				$("input[name='user_name']").val(d.user_name);
+				$("input[name='mobile']").val(d.mobile);
+				$("input[name='address']").val(d.address);
+				$("input[name='district']").val(d.district);
+				
+				
+			}
+		},
+	});
+	
+}getMemberInfo();
+
+
+    $("#start").cityPicker({
+        title: "选择所在区域",
+        onChange: function (picker, values, displayValues) {
+            console.log(values, displayValues);
+        }
+    });
+
+	
+$(".tjadd").click(function(){
+	var mobile=$("input[name='mobile']").val();
+	var user_name=$("input[name='user_name']").val();
+	var address=$("input[name='address']").val();
+	var district=$("input[name='district']").val();
+	var nickname=$("input[name='nickname']").val();
+	var file = $("#thumbfileId").val();
+	var mobile_reg = /^((13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9}))$/;
+	
+	if($.trim(user_name)==''){
+		$.toast("请输入真实姓名", "cancel");
+		return false;
+	}
+	if($.trim(mobile)==''){
+		$.toast("请输入联系电话", "cancel");
+		return false;
+	}
+	if($.trim(address)==''){
+		$.toast("请选择地址", "cancel");
+		return false;
+	}
+	if($.trim(district)==''){
+		$.toast("请输入详细地址", "cancel");
+		return false;
+	}
+	if(!mobile_reg.test($.trim(mobile))){
+		$.toast("联系电话有误", "cancel");
+		return false;
+	}
+	
+	var params = {
+		'user_name':user_name,
+		'mobile':mobile,
+		'address':address,
+		'district':district,
+		'nickname':nickname,
+		'userimg':file,
+	}
+	
+	myHttp({
+		url: urls.updateMyData.path,
+		//headers:{'jd-token':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			$.toast(res.msg);
+			if (res.code == 200) {
+				setTimeout(function(){
+					locationUrl('share_center.html',false);
+				},1200);
+			}
+		},
+	});
+	
+	
+});
+
+
+
+function ajaxUpload(){
+	var formData = new FormData($("#btnId")[0]);
+       $.ajax({
+            type: "POST",
+            data:formData,
+            autoSubmit: false,
+            url: API_ROOT+urls.ajaxUploadImg.path,
+            enctype: 'multipart/form-data',
+            async: false,
+            dataType:'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+        success: function (res) {
+           if(res.code==200){
+			  var url = res.data.url;
+			  $("#imgid").attr('src',url);
+              $("#thumbfileId").val(url);
+           }else{
+               alert(data.msg);
+           }
+        }
+    });
+}
+
+</script>
+
+
+
+
+</html>

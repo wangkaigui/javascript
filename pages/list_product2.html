@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="/statics/default/css/jquery-weui.css">
+    <link rel="stylesheet" href="/statics/default/css/public.css">
+    <link rel="stylesheet" href="/statics/default/css/ui-box.css">
+    <link rel="stylesheet" href="/statics/default/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/statics/default/css/index.css">
+    <link rel="stylesheet" href="/statics/default/css/swiper.css">
+    <title>{:getCategory($catid,"catname")}</title>
+</head>
+<body ontouchstart >
+
+<!--banner-->
+<div class="gxbanner swiper-container">
+    <div class="swiper-wrapper">
+		<?php 
+			if($catid==25){
+				$where="catid=11 and id=30 ";
+			}else{
+				$where="catid=11 and id=28";
+			}
+		$banerImgs = M('images')->where($where)->field('catid,thumbs,id')->find();$banData=array_reverse(unserialize($banerImgs['thumbs']));?>
+		<volist name="banData" id="banId">
+			<div class="swiper-slide"><a href="#"><img src="{$banId['url']}" /> </a> </div>
+		</volist>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<!--旅游产品展示-->
+<div class="ub ub-ver ub-ac lvcp">
+    <div class="ub ub-ac ub-pc title">悦美啦 · {:getCategory($catid,"catname")}</div>
+    <div class="fbt"><span>旅行游乐 悦美悦嗨</span></div>
+    <ul>
+		<content action="lists" catid="$catid" order="updatetime desc" >
+			<volist name="data" id="vo">
+				<li>
+					<a href="{$vo['url']}">
+						<div class="img"><img src="{$vo['thumb']}" /> </div>
+						<!--<h4>{$vo['title']}</h4>
+						<div class="ub ub-ac pr1"><div class="price1 ub-f1"><em>&yen;</em><span>{$vo['price']}</span></div> <i>已售：{$vo['salenum']}</i></div>-->
+					</a>
+				</li>
+			</volist>
+		</content>
+    </ul>
+</div>
+
+<!--底部导航-->
+<template file="Content/menu.php" />
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="/statics/default/js/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="/statics/default/js/swiper.min.js"></script>
+
+
+<script>
+
+//banner
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    slidesPerView: 1,
+    paginationClickable: true,
+    loop: true
+});
+
+</script>
+
+
+</html>

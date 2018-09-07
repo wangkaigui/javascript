@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="/statics/default/css/jquery-weui.css">
+    <link rel="stylesheet" href="/statics/default/css/public.css">
+    <link rel="stylesheet" href="/statics/default/css/ui-box.css">
+    <link rel="stylesheet" href="/statics/default/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/statics/default/css/index.css">
+    <link rel="stylesheet" href="/statics/default/css/swiper.css">
+    <title>{:getCategory($catid,'catname')}</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--banner-->
+<div class="banner swiper-container">
+    <div class="swiper-wrapper">
+        <div class="swiper-slide"><a href="#"><img src="/statics/default/images/banner1.jpg" /> </a> </div>
+        <div class="swiper-slide"><a href="#"><img src="/statics/default/images/banner1.jpg" /> </a> </div>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<!--新闻列表-->
+<div class="news">
+    <div class="ub title">
+        <a href="javascript:void (0);" class="ub ub-ac ub-pc on">{:getCategory($catid,'catname')}<em></em></a>
+        <!--<a href="javascript:void (0);" class="ub ub-ac ub-pc">真爱学堂<em></em></a>	-->
+    </div>
+    <div class="newslist">
+        <ul id="loadMore">
+        <content action="lists" catid="$catid" order="updatetime desc" num="1">
+        <volist name="data" id="vo">
+            <li><a href="{$vo.url}" class="ub ub-ac ub-pc"><img src="{$vo.thumb}" /> <div class="ub-f1 newstxt"><h4>{$vo.title}</h4><p>{$vo.description}</p></div> </a> </li>
+        </volist>
+        </content>
+            <!-- <li><a href="#" class="ub ub-ac ub-pc"><img src="/statics/default/images/newpic2.jpg" /> <div class="ub-f1 newstxt"><h4>月遇青春系列·青春花园·湖南站</h4><p>智慧集团介绍价值消费.青春日记（视频建议WIFI网络收看）</p></div> </a> </li>
+            <li><a href="#" class="ub ub-ac ub-pc"><img src="/statics/default/images/newpic1.jpg" /> <div class="ub-f1 newstxt"><h4>月遇青春系列·青春花园·湖南站</h4><p>智慧集团介绍价值消费.青春日记（视频建议WIFI网络收看）</p></div> </a> </li>
+            <li><a href="#" class="ub ub-ac ub-pc"><img src="/statics/default/images/newpic2.jpg" /> <div class="ub-f1 newstxt"><h4>月遇青春系列·青春花园·湖南站</h4><p>智慧集团介绍价值消费.青春日记（视频建议WIFI网络收看）</p></div> </a> </li>
+            <li><a href="#" class="ub ub-ac ub-pc"><img src="/statics/default/images/newpic1.jpg" /> <div class="ub-f1 newstxt"><h4>月遇青春系列·青春花园·湖南站</h4><p>智慧集团介绍价值消费.青春日记（视频建议WIFI网络收看）</p></div> </a> </li>
+            <li><a href="#" class="ub ub-ac ub-pc"><img src="/statics/default/images/newpic2.jpg" /> <div class="ub-f1 newstxt"><h4>月遇青春系列·青春花园·湖南站</h4><p>智慧集团介绍价值消费.青春日记（视频建议WIFI网络收看）</p></div> </a> </li> -->
+        </ul>
+    </div>
+    <div class="loadmore">
+    <a id="jz" href="javascript:;" onclick="loadMore($(this).attr('lan'),this);" lan="2" class="ub ub-ac ub-pc">点击加载更多</a>
+    <a style="display: none" href="javascript:;" id="remove">没有更多数据了</a> 
+    </div>
+</div>
+<!--底部导航-->
+<template file="Content/menu.php" />
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="/statics/default/js/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="/statics/default/js/swiper.min.js"></script>
+
+
+<script>
+ //选项卡
+ $(function(){
+     $(".title").find("a").click(function(){
+        $(this).addClass("on").siblings().removeClass("on");
+     });
+ })
+//banner
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    slidesPerView: 1,
+    paginationClickable: true,
+    loop: true
+});
+
+</script>
+<script>
+  function loadMore(page,thisd){
+    var catid="{$catid}";
+    var next=Number(page)+1;
+    $.ajax({
+      url:"{:U('Index/loadnews')}",
+      type:'post',
+      dataType:'json',
+      data:{
+        'page':page,
+        'catid':catid,
+      },
+
+      success:function(data){
+        //alert("data");
+        if(data.data!==null){
+          var str='';
+          $.each(data.data,function(k,v){
+            str+='<li><a href="'+v.url+'" class="ub ub-ac ub-pc"><img src="'+v.thumb+'"><div class="ub-f1 newstxt"><h4>'+v.title+'</h4><p>'+v.description+'</p></div></a></li>';
+          });
+          $(thisd).attr('lan',next);
+          $("#loadMore").append(str);
+        }
+        if(data.is==false || data.data==null){
+          //$(thisd).addClass('dis');
+          //$("#remove").removeClass('dis').addClass('blo');
+          document.getElementById('jz').remove();
+          document.getElementById('remove').style.display="block";
+        }
+        
+      },
+      error:function(){
+        
+      },
+    });
+    
+  }
+</script>
+
+
+</html>

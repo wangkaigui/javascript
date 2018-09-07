@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>我的客户</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--分享中心头部-->
+
+<div class="ub ub-ver ub-ac ub-pc sharebg">
+    <div class="img"><img src="" id="userimgid"/> </div>
+    <div class="ub ub-ac ub-pc username"><h5 id="usernicknameid"></h5><span id="usermidid"></span></div>
+    <div class="ufx"><span id="shareinfoid">我的分享人：</span><span id="regdateid"></span></div>
+    <div class="ub ub-ac ub-pc uleve1" id="agentid"></div>
+</div>
+
+<!--团队统计-->
+<div class="ub ub-ac teamstj"><p class="ub ub-ac teamzrs">团队总人数：<span id="teamsNum"></span>人</p><p class="ub ub-ac">今日新增：<span id="todaynum"></span>人</p></div>
+<!--团队列表-->
+<div class="teamList">
+    <ul id="contentid">
+	
+    </ul>
+</div>
+
+<!--底部导航-->
+<div class="footnav">
+    <ul class="ub">
+        <li  class="ub-f1" ><div class="pos"><a href="javascript:locationUrl('../index.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe61f;</em><span>首页</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/cart.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>购物车</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/qr_code.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe605;</em><span>分享</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/message.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>消息</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/share_center.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe62d;</em><span>我的</span></a></div>  </li>
+    </ul>
+</div>
+
+
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+function getMyTeams(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getMyTeams.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data.teams;
+				var member_info = res.data.member_info;
+				var str = '';
+				
+				if(d!='' && d!=null){
+					str='';
+					$.each(d,function(k,v){
+						var ss='';
+						if(v.user_name!=null){
+							ss='('+v.user_name+')';
+						}else{
+							ss='';
+						}
+						str+='<li><div class="ub ub-ac first"><img src="'+v.userpic+'" /><h5 class="ub-f1">'+v.nickname+
+							''+ss+'</h5> <i class="ub ub-ac ub-ac dl3">'+v.agent_name+'</i> <em></em> </div></li>';
+					})
+					
+					$("#contentid").html(str);
+				}
+				$("#teamsNum").html(res.data.teamsNum);
+				$("#todaynum").html(res.data.todaynum);
+				
+				$("#userimgid").attr('src',member_info.userpic);
+				$("#usernicknameid").html(member_info.nickname);
+				$("#regdateid").html(member_info.regtime);
+				$("#agentid").html(member_info.agent_name);
+				$("#usermidid").html('[ID：'+member_info.mid+']');
+				
+			}
+		},
+	});
+	
+}getMyTeams();
+</script>
+
+
+
+
+</html>

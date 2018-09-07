@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>积分明细</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--分享中心头部-->
+<div class="ub ub-ver ub-ac ub-pc sharebg1">
+    <div class="shared">
+        <div class="ub ub-ver ub-ac ub-pc circle">
+            <div class="ub ub-ac ub-pc numtitle">剩余奖励</div>
+            <h4 class="ub ub-ac ub-pc counter">{$member_info['balance']}</h4>
+            <div class="wtx">累计奖励：<span>{$total_amount}</span> 分</div>
+        </div>
+    </div>
+    <a href="{:U('Center/apply_for',array('uid'=>$member_info['mid']))}" class="txbtn">奖励兑换</a>
+</div>
+
+<volist name="trade_log" id="vo" key="ke">
+	<if condition="$vo.month neq '' ">
+		<div class="tdate"><span>{$vo.month}</span></div>
+		
+		<div class="mxtable">
+			<table border="0" cellpadding="0" cellspacing="0" >
+				<tr><th align="center" valign="middle">消费项目</th><th align="center" valign="middle">消费时间</th><th align="center" valign="middle">消费积分</th><th align="center" valign="middle">消费客户</th><th align="center" valign="middle">奖励类型</th><th align="center" valign="middle">奖励</th></tr>
+	</if>	
+		<?php $orderinfo = M('order')->where('order_id="'.$vo['orderid'].'"')->find();$nums = M('order_goods')->where('order_id="'.$vo['orderid'].'"')->find();?>
+		<?php $parents = M('member')->where("mid=".$vo['from_id'])->field("nickname,user_name,mid,agent_level,userimg")->find();?>
+		
+		<tr><td align="center" valign="middle">{:getOrderDescribe($vo['orderid'])}</td><td align="center" valign="middle"><?php echo mb_substr($orderinfo['pay_time'],6,10)?></td><td align="center" valign="middle">{$orderinfo['amount']}</td><td align="center" valign="middle"><if condition="$parents['user_name'] neq ''">{$parents['user_name']}<else />{$parents['nickname']}</if></td><td align="center" valign="middle"><if condition="$nums['num'] GT 1 or $orderinfo['amount'] LT '298'">复购<else />首购</if></td><td align="center" valign="middle">{$vo['tamount']}</td></tr>
+	<if condition="($vo.month neq '' && $datas[$ke+1] eq '') && ($vo.month eq '')">
+		</table>
+		<div style="width:100%;height:4rem;"></div>
+	</div>
+	</if>
+
+</volist>
+
+<!--底部导航-->
+
+
+
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script src="../js/jquery.waypoints.min.js"></script>
+<script type="text/javascript" src="../js/jquery.countup.min.js"></script>
+<script type="text/javascript">
+    $('.counter').countUp();
+</script>
+
+
+
+</html>

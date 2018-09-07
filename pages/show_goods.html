@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>商品详情</title>
+</head>
+
+<body ontouchstart class="bg-gray">
+
+<!--banner-->
+<div class="fybanner swiper-container">
+    <div class="swiper-wrapper" id="swiperid">
+	
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<!--商品信息1-->
+<div class="shoptop">
+    <h4 class="ub" id="titleid"></h4>
+	
+        <div class="ub ub-ae sprice">
+			
+			<b>复购价：</b>
+			<div class="pr1"><i>&yen;</i>
+				<span id="dis_priceid"></span>
+			</div>
+			&nbsp &nbsp
+			<b>首购价：</b>
+			<div class="pr1"><i>&yen;</i>
+				<span id="priceid"></span>
+			</div>
+			
+			
+				
+			
+		</div>
+   
+	<div class="ub sm"><span class="ub-f1 kc"><span id="kucunid"></span></span><span><span id="saleid"></span>
+	
+		
+	
+	</span></div>
+</div>
+
+<!--商品详情-->
+<div class="spdetail">
+    <div class="ub ub-ac title">套餐详情</div>
+    <div class="scontent" id="contentid">
+		
+    </div>
+</div>
+
+<!--底部购买-->
+
+<if condition="$issale neq 2">
+
+	<div class="fyfooter">
+		<div class="ub fnav">
+			<div class="fli ub-f1 sc" id="show-toast"><a href="javascript:locationUrl('cart.html',false)" class="ub ub-ac ub-pc"><em class="iconfont">&#xe626;</em><span>购物车</span></a></div>
+			
+			<div class="fli ub-f1 gwc1" id="confirms"><a href="javascript:void(0);" class="ub ub-ac ub-pc"><span>加入购物车</span></a> </div>
+			
+			<div class="fli ub-f2 ljgm"><a href="javascript:void(0)" class="ub ub-ac ub-pc" id="buyid">立即购买</a> </div>
+		</div>
+	</div>
+	
+</if>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+//banner
+setTimeout(function(){
+	var swiper = new Swiper('.swiper-container', {
+		pagination: '.swiper-pagination',
+		slidesPerView: 1,
+		paginationClickable: true,
+		loop: true
+	});
+},300)
+
+$("#buyid").click(function(){
+	var pid = getQueryString(window.location.href,'id');
+	locationUrl('confirm_order.html?id='+pid,true);
+})
+function getProductDetail(){
+	var pid = getQueryString(window.location.href,'id');
+	
+	if(pid==null || pid==''){
+		lay.msg('商品参数不存在');
+		return false;
+	}
+	$('.loading').show();
+	var params = {"pid":pid};
+	myHttp({
+		url: urls.getProductDetail.path,
+		headers:{'accessToken':accessToken},
+		params: {
+			'pid':pid,
+		},
+		success: function (res) { 
+			
+			$('.loading').hide();
+			if (res.code == 200) {
+				var info = res.data.info;
+				
+				$("#titleid").html(info.title);
+				$("#dis_priceid").html(info.dis_price);
+				$("#priceid").html(info.price);
+				$("#kucunid").html('库存：'+info.stock+'件');
+				$("#saleid").html('最近售出：'+info.salenum+'件');
+				$('#contentid').html(info.content.myReplace('/d/file/',API_ROOT+'/d/file/'));
+				
+				var str='';
+				
+				$.each(info.thumbs,function(k,v){
+					str+='<div class="swiper-slide"><a href="javascript:;"><img src="'+API_ROOT+v.url+'" /> </a> </div>';
+				})
+				
+
+				$("#swiperid").html(str);
+				
+			}
+		},
+		
+	});
+}getProductDetail();
+
+
+function getUserinfos(){
+	
+	
+	
+}	
+	
+$('#confirms').click(function(){
+	var num = 1;
+	
+	var type=2;//goods类型
+	var product_id = getQueryString(window.location.href,'id');;
+	
+	var params = {
+		'goods_id':product_id,
+		'num':1,
+		'action':'add',
+		'type':type
+	};
+	
+	myHttp({
+		url: urls.actionCart.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				$.toast('添加成功');
+			}
+		},
+	});
+	
+	
+});
+	
+	
+	function addCart(){
+		
+		$.ajax({
+			type:'post',
+			dataType:'json',
+			url:"{:U('Center/ajaxAddConnect')}",
+			data:{
+				'goods_id':"{$id}",
+				'action':action,
+			},
+			beforeSend:function(){
+				$.showLoading();
+			},
+			success:function(data){
+				$.hideLoading();
+				if(data.ret==2){
+					$.toast(data.msg);
+				}else{
+					$.toast(data.msg,"cancel");
+				}
+				
+			},
+			error:function(){
+				$.toast("请求错误",'cancel');
+			},
+		});
+	
+	}
+   
+
+
+</script>
+
+<script>
+
+   
+</script>
+
+
+</html>

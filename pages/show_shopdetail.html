@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="/statics/default/css/weui.min.css">
+    <link rel="stylesheet" href="/statics/default/css/jquery-weui.css">
+    <link rel="stylesheet" href="/statics/default/css/public.css">
+    <link rel="stylesheet" href="/statics/default/css/ui-box.css">
+    <link rel="stylesheet" href="/statics/default/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/statics/default/css/index.css">
+    <link rel="stylesheet" href="/statics/default/css/swiper.css">
+    <title>商品详情</title>
+</head>
+<body ontouchstart class="bg-gray">
+<?php 
+    $id = I('get.id'); 
+    $thumb = M('goods')->where("id=id")->getField('thumbs');
+    $data = unserialize($thumb);
+	$isconnect = M('connect')->where("goods_id=$id and uid=".$member_info['mid'])->find();
+?>
+<!--banner-->
+<div class="fybanner swiper-container">
+    <div class="swiper-wrapper">
+        <volist name="data" id="vo">
+			<div class="swiper-slide"><a href="javascript:;"><img src="{$vo.url}" /> </a> </div>
+		</volist>
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<!--商品信息1-->
+<div class="shoptop">
+    <h4 class="ub">{$title}</h4>
+    <div class="ub sprice"><div class="pr1"><i>&yen;</i><span>{$price}</span></div> </div>
+    <div class="ub sm"><span class="ub-f1 kc">库存：{$stock} 件</span><span>最近售出：{$salenum} 件</span></div>
+</div>
+
+<!--商品详情-->
+<div class="spdetail">
+    <div class="ub ub-ac title">商品详情</div>
+    <div class="scontent">
+		{$content}
+    </div>
+</div>
+
+<!--底部购买-->
+<div class="fyfooter">
+    <div class="ub fnav">
+        <div class="fli ub-f1 fx"><a href="javascript:void(0);" class="ub ub-ac ub-pc"><em class="iconfont">&#xe62c;</em><span>分享</span></a> </div>
+        <div id="show-toast" <if condition="$isconnect neq ''"> class="fli ub-f1 sc on" <else /> class="fli ub-f1 sc" </if>><a href="javascript:void(0);" class="ub ub-ac ub-pc"><em class="iconfont">&#xe626;</em><span>收藏</span></a></div>
+        <div class="fli ub-f2 ljgm"><a href="{:U('Center/confirm_shop',array('id'=>$id))}" class="ub ub-ac ub-pc">立即购买</a> </div>
+    </div>
+</div>
+
+
+
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="/statics/default/js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="/statics/default/js/swiper.min.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery-weui.min.js"></script>
+
+<script>
+
+//banner
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    slidesPerView: 1,
+    paginationClickable: true,
+    loop: true
+});
+
+$(function(){
+    $(".sc").click(function(){
+        if($(this).hasClass("on")){
+            $(this).attr("id","show-toast-cancel");
+			var action='cancel';
+            $(this).removeClass("on")
+        }else{
+			var action='connect';
+            $(this).addClass("on")
+            $(this).attr("id","show-toast");
+        }
+		
+		$.ajax({
+		type:'post',
+		dataType:'json',
+		url:"{:U('Center/ajaxAddConnect')}",
+		data:{
+			'goods_id':"{$id}",
+			'action':action,
+		},
+		beforeSend:function(){
+			$.showLoading();
+		},
+		success:function(data){
+			$.hideLoading();
+			if(data.ret==2){
+				$.toast(data.msg);
+			}else{
+				$.toast(data.msg,"cancel");
+			}
+			
+		},
+		error:function(){
+			$.toast("请求错误",'cancel');
+		},
+	});
+		
+    })
+	
+	
+	
+})
+
+</script>
+
+
+
+</html>

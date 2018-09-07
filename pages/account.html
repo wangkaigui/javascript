@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>订单支付</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--订单信息-->
+<div class="ub ub-ac ddpayxx"><h4>订单编号</h4><span class="ub-f1" id="oidid"></span></div>
+<div class="ub ub-ac ddpayxx"><h4>订单金额</h4><p class="ub-f1"><i>&yen;</i><em id="amountid"></em></p></div>
+
+<div class="paylist">
+    <a href="javascript:;" onclick="callpay();" class="ub ub-ac ">
+        <div class="img"><img src="../images/payicon1.jpg" /> </div>
+        <div class="ub-f1 paytxt"><h4>微信支付</h4><p>微信安全支付</p></div>
+        <div class="arr iconfont">&#xe625;</div>
+    </a>
+</div>
+
+<span id="payid">
+
+</span>
+
+
+<div style="width: 100%; height: 3.5rem;"></div>
+<!--支付按钮
+<a href="#" class="ub ub-ac ub-pc tjadd">立即支付</a>-->
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+</html>
+
+
+<script>
+
+function getOrderInfo(){
+	var order_id = getQueryString(window.location.href,'order_id');
+	var params = {'order_id':order_id};
+	
+	myHttp({
+		url: urls.getOrderInfo.path,
+		//headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				
+				var member_info = res.data.member_info;
+				var order_info = res.data.order_info;
+				var paystr='';
+				$("#oidid").html(order_info.order_id);
+				$("#amountid").html(order_info.amount);
+				
+				if(order_info.order_type!=6){
+					paystr+='<div class="paylist"><a href="javascript:;" onclick="score_pay('+order_info.amount+');" class="ub ub-ac "><div class="img"><img src="../images/payicon2.jpg" />'+
+						'</div><div class="ub-f1 paytxt"><h4>积分支付</h4><p>可用积分:<span id="balanceid"></span></p></div><div class="arr iconfont">&#xe625;</div></a></div>';
+					$("#payid").html(paystr);
+				}
+				
+				setTimeout(function(){
+					$("#balanceid").html(member_info.balance);
+				},100)
+				
+			}
+		},
+	});
+	
+}getOrderInfo();
+
+
+/****积分支付***/
+function scorePay(amount){
+	var order_id = getQueryString(window.location.href,'order_id');
+	$.confirm({
+	  title: '确认支付？',
+	  text: '当前订单所需积分为'+amount+',确认支付后,将会扣除相应数量的购物积分',
+	  onOK: function () {
+		
+		var params = {
+				'order_id':order_id,
+		};
+		
+		myHttp({
+			url: urls.scorePay.path,
+			headers:{'accessToken':accessToken},
+			params: params,
+			success: function (res) { 
+				$('.loading').hide();
+				if (res.code == 200) {
+					$.toast('支付成功');
+					setTimeout(function(){window.location.href = "/index.php?m=Center&a=pay_success"},1500);
+				}
+			},
+		});
+		
+	
+	},
+	
+	onCancel: function () {
+		$.toast('支付失败','cancel');
+	}
+	
+});
+	
+}
+
+</script>

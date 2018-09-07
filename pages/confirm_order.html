@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>订单确认</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--收货地址-->
+
+<div class="shadd">
+    <a href="javascript:;" onclick="selectAddress();" class="ub ub-ac">
+        <div class="ub-f1 sleft" id="addressid">
+           
+        </div>
+        <em class="iconfont">&#xe625;</em>
+    </a>
+</div>
+
+<!--添加地址，未设置默认地址时显示-->
+<span id="addid">
+
+</span>
+
+<!--订单信息-->
+<div class="ordermes">
+    <div class="ub ub-ac title"><h4>订单信息</h4></div>
+    <div class="ub ordernr" id="contentid">
+       
+    </div>
+</div>
+
+<span id="tourseid">
+
+</span>
+
+
+
+<div class="notice1">
+备注：单品满5件包邮，一折特价商品除质量问题外，不予退换货！
+</div>
+
+
+<div class="txfs">
+    <div class="ub ub-ac txtop">请选择提货方式</div>
+    <div id="txfs">
+		<div class="ub ub-ac wxpay on" lan="10"> <div class="zfsm ub-f1"><h3>自提</h3><i>请自行去我司或店里取商品</i></div><b></b></div>
+        <div class="ub ub-ac wxpay" lan="20"> <div class="zfsm ub-f1"><h3>快递</h3><i>支持"三通一达"等常见快递（包邮）</i></div><b></b></div>	
+	</div>
+</div>
+
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+<div class="ofooter">
+    <div class="ub ofarea">
+        <div class="ub-f1 ub ub-ac ub-pe left"><em>1件，总计：</em><span id="amountid">￥</span></div>
+        <a href="javascript:;" onclick="confirm_share();" class="ub ub-ac ub-pc btn"><span>提交订单</span></a>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+
+<script type="text/javascript" src="../js/config.js"></script>
+
+
+<script>
+
+$("#txfs").find(".wxpay").click(function(){
+	
+	$(this).addClass("on").siblings().removeClass("on");
+	
+	var types = $(this).attr('lan');
+
+	if("{$isres}"==true && "{$member_info['agent_level']}" < 8 && "{$goods_info['draw']}" !=2){
+		if(types==20){
+			$("#amountid").html("￥"+"{$true_amount2}");
+		}else{
+			$("#amountid").html("￥"+"{$true_amount1}");
+		}
+	}
+	
+})
+
+function selectAddress(){
+	var id = getQueryString(window.location.href,'id');
+	var luck_id = getQueryString(window.location.href,'id');
+	if(luck_id!=null && luck_id!='' &&  luck_id!='undefined'){
+		locationUrl('choose_address.html?id='+id+'&luck_id='+luck_id,true);
+	}else{
+		locationUrl('choose_address.html?id='+id,true);
+	}
+	
+}
+
+function getProductDetail(){
+	var pid = getQueryString(window.location.href,'id');
+	
+	if(pid==null || pid==''){
+		$.toast('商品参数不存在','cancel');
+		return false;
+	}
+	$('.loading').show();
+	
+	var params = {"pid":pid};
+	
+	myHttp({
+		url: urls.getProductDetail.path,
+		headers:{'accessToken':accessToken},
+		params: {
+			'pid':pid,
+		},
+		success: function (res) { 
+			
+			$('.loading').hide();
+			if (res.code == 200) {
+			
+				var goods_info = res.data.info;
+				
+				var content= '';
+				
+				content+='<div class="img"><img src="'+API_ROOT+goods_info.thumb+'" /></div><div class="ub-f1 oright">'+
+					'<div class="ub ub-ac otxt1"><b class="ub-f1">'+goods_info.title+'</b><span>&yen;'+goods_info.dis_price+'</if></span></div>'+
+					'<div class="ub ub-ac otxt2"><span class="ub-f1">类型：'+goods_info.catname+'</span><i>×1</i></div> </div>';
+	
+				var str='<div class="olist"><a href="#" class="ub ub-ac"><h4>身份证号</h4><input class="ub-f1" id="idcard" type="text" placeholder="请输入身份证号"></a></div>';
+				
+				$("#contentid").html(content);
+				$("#amountid").html("￥"+goods_info.dis_price);
+				if(res.data.istourism==2){
+					$("#tourseid").html(str);
+				}
+				
+	
+			}
+		},
+		
+	});
+}getProductDetail();
+	
+
+function getUserAddress(){
+	var params = {};
+	var aid = getQueryString(window.location.href,'aid');
+	var id = getQueryString(window.location.href,'id');
+	if(aid!=null &&  aid!='' &&  aid!='undefined'){
+		params['aid'] = aid;
+	}
+	
+	myHttp({
+		url: urls.getUserAddress.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) {
+			$('.loading').hide();
+			if (res.code == 200) {
+			
+				var address = res.data;
+				var strs;
+				if(address.isdefault==1){
+					ss='<i class="ub ub-ac ub-pc">默认</i>';
+				}else{
+					ss='';
+				}
+				
+				strs='<div class="ub ub-ac snametel"><h4>'+address.name+'</h4><span class="ub-f1">'+address.mobile+'</span>'+
+					''+ss+'</div><div class="address">'+address.name+address.area+'</div>';
+					
+				$("#addressid").html(strs);
+				
+				if(address==null || address=='' || address=='undefined'){
+					$("#addid").html('<div class="olist"><a href="javascript:locationUrl(\'address_edit.html?id='+id+'\',true);" class="ub ub-ac"><h4 class="ub-f1">添加收货地址</h4><em class="iconfont">&#xe625;</em></a></div>')
+				}
+			}
+		},
+	});
+	
+}getUserAddress();
+
+function confirm_share(){
+
+	var id = getQueryString(window.location.href,'id');
+	var params = {
+		'goods_id':id
+	};
+	
+	myHttp({
+		url: urls.subOrderCheck.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code != 200) {
+				return false;
+			}else{
+			
+				var is_buy = res.data.is_buy;
+				var parent_info = res.data.parent_info;
+				var goods_info = res.data.goods_info;
+				if(goods_info.draw!=2){
+					if(is_buy=="1"){
+						var ss = parent_info.nickname;
+						var name = parent_info.user_name;
+						var mid = parent_info.mid;
+						
+						var idcard = $.trim($("#idcard").val());
+						
+						if(goods_info.istourism==2){
+							if(idcard=='' || idcard==null){
+								$.toast('请填写身份证号','cancel');
+								return false;
+							}
+						}
+						
+						var msg='';
+						if(name==''||name==null){
+							msg = '是否确认"'+ss+'"为您的分享人?';
+						}else{
+							msg = '是否确认"'+ss+'['+name+']'+'"为您的分享人?';
+						}
+						if(mid==''||mid==null){
+							msg = '您还没有设置直接分享人，是否立即去设置？';
+						}
+						$.confirm({
+							  title: '提示',
+							  text: msg,
+							  onOK: function () {
+								 if(mid==''||mid==null){
+									confirm_tian();
+								 }else{
+									goBuy();
+								 }
+							},
+							
+							onCancel: function () {
+								confirm_tian();
+							}
+						});
+					}else{
+						goBuy();
+					}
+				}else{
+					
+					if("{$type}"==31){
+						//var price = "{$goods_info['upgrade']}";
+						var price = 6800;
+						$.confirm({
+								  title: '提示',
+								  text: "请确认您已向我司支付"+price+"，是否继续购买？",
+								  onOK: function () {
+									goBuy();
+								},
+								
+								onCancel: function () {
+									
+								}
+							});
+					}else if("{$type}"==32){
+						var price = 26800;
+						$.confirm({
+								  title: '提示',
+								  text: "请确认您已向我司支付"+price+"，是否继续购买？",
+								  onOK: function () {
+									goBuy();
+								},
+								
+								onCancel: function () {
+									
+								}
+							});
+					}else{
+						goBuy();
+					}
+					
+				}
+			
+			}
+		},
+	});
+	
+	
+}
+
+function confirm_tian(){
+	$.prompt("请输入上级代理人ID", function(text) {
+		var check = /^(([1-9]{1}[\d]*)|0)(\.[\d]{1,2})?$/;    //金额匹配正则
+        if(!check.test(text)){
+            $(this).val('');
+			return false
+        }
+		if(text==''||text==null){
+			return;
+		}
+		//alert(text);return;
+		
+		$.ajax({
+			type:'post',
+			dataType:'json',
+			url:"{:U('Center/setUserAgent')}",
+			data:{
+				'uid':"{$member_info['mid']}",
+				'parent_id':text,
+			},
+			beforeSend:function(){
+				//$.showLoading();
+			},
+			success:function(data){
+				if(data.ret==2){
+					$.toast(data.msg);
+					window.location.href=window.location.href;
+				}else{
+					$.toast(data.msg,'cancel');
+				}
+			},
+			error:function(){
+				$.toast("请求错误",'');
+			},
+		});
+		
+		
+		
+	}, function() {
+	  //点击取消后的回调函数
+	});
+}
+
+function goBuy(){
+	var take_type = $("#txfs").find(".on").attr('lan');
+	var idcard = $.trim($("#idcard").val());
+	var goods_id = getQueryString(window.location.href,'id');
+	var aid = getQueryString(window.location.href,'aid');
+	var luck_id = getQueryString(window.location.href,'luck_id');
+	
+	var params = {
+		'goods_id':goods_id,
+		'aid':aid,
+		'distribution':take_type,
+		'idcard':idcard,
+	};
+	
+	if(luck_id!=null && luck_id!='' && luck_id!='undefined'){
+		params['type'] = luck_id;
+	}
+	
+	myHttp({
+		url: urls.orderBuy.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				locationUrl('account.html?order_id='+res.data.order_id,true);
+			}
+		},
+	});
+	
+	
+	/*
+	$.ajax({
+		type:'post',
+		dataType:'json',
+		url:"{:U('Center/placeOrder')}",
+		data:{
+			'goods_id':"{$goods_id}",
+			'address_id':"{$address_id}",
+			'aid':"{$aid}",
+			'distribution':take_type,
+			'idcard':idcard,
+			'type':"{$type}",
+		},
+		beforeSend:function(){
+			$.showLoading();
+		},
+		success:function(data){
+			$.hideLoading();
+			if(data.ret==2){
+				$.toast('下单成功');
+				window.location.href= "/index.php?m=Center&a=account&order_id="+data.order_id;
+			}else if(data.ret==3){
+				
+				$.confirm({
+					  title: '提示',
+					  text: '您还没有完善省市信息，是否立即前往个人中心？',
+					  onOK: function () {
+						window.location.href= "/index.php?m=User&a=my_data";
+					},
+					
+					onCancel: function () {
+						
+					}
+				});
+				
+			}else{
+				setTimeout($.hideLoading(),1800);
+				$.toast(data.msg,"cancel");
+			}
+			
+		},
+		error:function(){
+			$.toast("请求错误",'');
+		},
+	});
+	
+	*/
+}
+</script>
+
+
+
+
+</html>

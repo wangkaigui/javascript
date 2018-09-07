@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="/statics/default/css/weui.min.css">
+    <link rel="stylesheet" href="/statics/default/css/jquery-weui.css">
+    <link rel="stylesheet" href="/statics/default/css/public.css">
+    <link rel="stylesheet" href="/statics/default/css/ui-box.css">
+    <link rel="stylesheet" href="/statics/default/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/statics/default/css/index.css">
+    <link rel="stylesheet" href="/statics/default/css/swiper.css">
+    <title>我的收藏</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+
+<!--订单列表-->
+<div class="sorderlist">
+	<volist name="conData" id="conId">
+		<ul>
+			<li class="ub ub-ver sc">
+				<div class="ub ub-ac list">
+					<div class="img"><img src="{$conId['thumb']}" /> </div>
+					<div class="ub-f1 txt">
+						<div class="ub ub-ac otxt1"><b class="ub-f1">{$conId['title']}</b></div>
+						<div class="ub ub-ac otxt2"><span class="ub-f1">类型：{:getCategory($conId['catid'],'catname')}</span></div>
+					</div>
+					<div class="scbtn"><a href="javascript:;" class="ub ub-ac ub-pc cancel" alt="{$conId['goods_id']}">取消收藏</a> </div>
+				</div>
+			</li>
+		</ul>
+    </volist>
+   
+</div>
+
+
+</body>
+<script type="text/javascript" src="/statics/default/js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="/statics/default/js/swiper.min.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery-weui.min.js"></script>
+
+<script>
+
+$(function(){
+    $(".orderState").find("li").click(function(){
+       $(this).addClass("on").siblings().removeClass("on");
+    });
+})
+
+$(".cancel").click(function(){
+	var goods_id=$(this).attr('alt');
+	$.ajax({
+		type:'post',
+		dataType:'json',
+		url:"{:U('Center/ajaxAddConnect')}",
+		data:{
+			'goods_id':goods_id,
+			'action':'cancel',
+		},
+		beforeSend:function(){
+			$.showLoading();
+		},
+		success:function(data){
+			$.hideLoading();
+			if(data.ret==2){
+				$.toast(data.msg);
+				setTimeout(function(){window.location.href=window.location.href},1500);
+			}else{
+				$.toast(data.msg,"cancel");
+			}
+			
+		},
+		error:function(){
+			$.toast("请求错误",'cancel');
+		},
+	});
+})
+</script>
+
+
+
+
+</html>

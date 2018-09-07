@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>充值购物积分</title>
+</head>
+<body ontouchstart style="background-color:#f4f4f4;">
+
+<div class="rechangebox">
+   <ul>
+     <li class="ub ub-pc">
+     	<div class="ub-f1 ub ub-ver ub-pc rleft">
+	        <h5>购物积分充值卡</h5>
+	        <h3><b>2000</b><span>购物积分</span></h3>
+	        <p>一次性充值满5000购物积分，可获取1次幸运补贴奖排位</p>
+     	</div>
+     	<div class="ub ub-ac ub-pc rright" onclick="goRecharge(2000);"><h4>立<br/>即<br/>充<br/>值</h4></div>    
+     </li>
+     <li class="ub ub-pc">
+     	<div class="ub-f1 ub ub-ver ub-pc rleft">
+	        <h5>购物积分充值卡</h5>
+	        <h3><b>5000</b><span>购物积分</span></h3>
+	        <p>一次性充值满5000购物积分，可获取1次幸运补贴奖排位</p>
+     	</div>
+     	<div class="ub ub-ac ub-pc rright" onclick="goRecharge(5000);"><h4>立<br/>即<br/>充<br/>值</h4></div>    
+     </li>
+	 
+	<li class="ub ub-pc">
+     	<div class="ub-f1 ub ub-ver ub-pc rleft">
+	        <h5>购物积分充值卡</h5>
+	        <h3><b>10000</b><span>购物积分</span></h3>
+	        <p>一次性充值满10000购物积分，可获取2次幸运补贴奖排位</p>
+     	</div>
+     	<div class="ub ub-ac ub-pc rright" onclick="goRecharge(10000);"><h4>立<br/>即<br/>充<br/>值</h4></div>    
+     </li>
+	 
+	<li class="ub ub-pc">
+     	<div class="ub-f1 ub ub-ver ub-pc rleft">
+	        <h5>购物积分充值卡</h5>
+	        <h3><b>20000</b><span>购物积分</span></h3>
+	        <p>一次性充值满20000购物积分，可获取4次幸运补贴奖排位</p>
+     	</div>
+     	<div class="ub ub-ac ub-pc rright" onclick="goRecharge(20000);"><h4>立<br/>即<br/>充<br/>值</h4></div>    
+     </li>
+   </ul>
+</div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+function goRecharge(amount){
+	
+	var params = {'amount':amount};
+	
+	myHttp({
+		url: urls.acRecharge.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data;
+			
+				locationUrl('account.html?order_id='+d,true);
+				
+			}
+		},
+	});
+
+	
+}
+
+</script>
+
+
+
+
+</html>

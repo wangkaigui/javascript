@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="css/jquery-weui.css">
+    <link rel="stylesheet" href="css/public.css">
+    <link rel="stylesheet" href="css/ui-box.css">
+    <link rel="stylesheet" href="iconfont/iconfont.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/swiper.css">
+    <title>悦美啦商城</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--banner-->
+<div class="banner swiper-container">
+    <div class="swiper-wrapper">
+
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<!--快捷菜单-->
+<div class="nav">
+    <ul class="clearfix">
+        <li><a href="javascript:locationUrl('pages/page_guide.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink1.png" /> <span>企业介绍</span> </a> </li>
+        <li><a href="javascript:locationUrl('pages/list_tuibian_news.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink2.png" /> <span>蜕变之美</span> </a> </li>
+        <li><a href="javascript:locationUrl('pages/page_zhuanjia.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink3.png" /> <span>整形专家</span> </a> </li>
+        <li><a href="javascript:locationUrl('pages/share_space.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink6.png" /> <span>共享空间</span> </a> </li>
+        <li><a href="javascript:locationUrl('pages/list_product1.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink5.png" /> <span>新零售</span> </a> </li>
+        <li><a href="javascript:locationUrl('pages/list_travel.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink8.png" /> <span>新旅行</span> </a> </li>
+		<li><a href="javascript:locationUrl('pages/list_education.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink4.png" /> <span>新教育</span> </a> </li>
+        <li><a href="javascript:locationUrl('pages/shop_index.html',false);" class="ub ub-ver ub-ac ub-pc"><img src="images/klink7.png" /> <span>新零售商城</span> </a> </li>
+        
+    </ul>
+</div>
+
+
+	<span id="pakid">
+		
+	</span>
+	
+	<div class="ub swsqd">
+		<a href="javascript:locationUrl('pages/list_luck.html',false)" >
+			<img src="" id="luckid2"> 
+		</a> 
+	</div>
+
+
+
+<!--悦美啦套餐系列-->
+<div class="yytc">
+    <div class="ub ub-ac ub-pc title">悦美啦 · </div>
+    <div class="yycp">
+        <ul id="tqId">
+        
+				
+        </ul>
+    </div>
+</div>
+
+
+<!--底部导航-->
+
+<div class="footnav">
+    <ul class="ub">
+        <li  class="ub-f1" ><div class="pos"><a href="javascript:locationUrl('index.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe61f;</em><span>首页</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/cart.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>购物车</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/qr_code.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe605;</em><span>分享</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/message.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>消息</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/share_center.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe62d;</em><span>我的</span></a></div>  </li>
+    </ul>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+
+<script type="text/javascript" src="js/jquery-2.1.4.js"></script>
+
+
+
+<script type="text/javascript" src="js/jquery.SuperSlide.2.1.1.js"></script>
+
+<script type="text/javascript" src="js/swiper.min.js"></script>
+
+<script type="text/javascript" src="js/config.js"></script>
+
+
+
+
+
+</html>
+
+
+<script>
+
+//banner
+setTimeout(function(){
+	var swiper = new Swiper('.swiper-container', {
+		pagination: '.swiper-pagination',
+		slidesPerView: 1,
+		paginationClickable: true,
+		loop: true
+	});
+},300)
+
+
+function index(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getIndexBanner.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var str='';
+				var d = res.data.thumbs;
+				$.each(d,function(k,v){
+					str+='<div class="swiper-slide"><a href="javascript:;" onclick="locationUrl();"><img src="'+API_ROOT+v.url+'" /></a></div>';
+				})
+				
+				$(".swiper-wrapper").html(str);
+				
+			}
+		},
+	});
+}index();
+
+//298套餐
+function getIndexPackage(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getIndexPackage.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			//console.log(res);
+			$('.loading').hide();
+			if (res.code == 200) {
+				var str='';
+				var d = res.data;
+				$.each(d,function(k,v){
+					str+='<div class="ub swsqd"><a href="javascript:locationUrl(\'./pages/show_goods2.html?id='+v.id+'\',true);"><img src="'+API_ROOT+v.data.thumb+'"/> </a> </div>';
+				})
+				
+				$("#pakid").html(str);
+				
+			}
+		},
+	});
+}getIndexPackage();
+
+
+//list_luck
+function getIndexListLuck(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getIndexListLuck.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			//console.log(res);
+			$('.loading').hide();
+			if (res.code == 200) {
+				$("#luckid2").attr('src',API_ROOT+res.data)
+			}
+		},
+	});
+}getIndexListLuck();
+
+/***特权专区***/
+function getIndexPackages(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getIndexPackages.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			//console.log(res);
+			$('.loading').hide();
+			if (res.code == 200) {
+				
+				var str='';
+				var d = res.data;
+				
+				$.each(d,function(k,v){
+					str+='<li><a href="javascript:locationUrl(\'./pages/show_goods.html?id='+v.id+'\',false);"><img src="'+API_ROOT+v.thumb+'" /> </a> </li>';
+				})
+				
+				$("#tqId").html(str);
+			
+			}
+		},
+	});
+}getIndexPackages();
+
+
+</script>

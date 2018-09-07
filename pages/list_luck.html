@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>幸运补贴</title>
+    <style>
+    .clearfix:after {visibility: hidden;display: block;font-size: 0;content: ".";clear: both;height: 0;}
+.clearfix {zoom: 1;}
+
+.fl {	float:left;}
+.fr {	float:right;}
+.none{	display:none;}
+
+.inrow{width: 100%; height: auto; margin: 0.4rem 0;}
+.inrow>li,.inrow span{display:inline-block;*display:inline;*zoom:1;font-size:0.92rem;letter-spacing:normal;word-spacing:normal; }
+.dataNums .dataOne{display: inline-block; width:3rem; height:4rem; margin: 0px 3px; text-align: center; background: url(../images/num-bg.png) no-repeat; background-size: 100%;}
+.dataNums .dataBoc {position: relative; width: 100%; height: 100%; overflow: hidden;}
+.dataNums .dataBoc .tt {position: absolute; top: 0;  left: 0; width: 100%;  height: 100%;}
+.dataNums .tt span{width:100%;height:100%; font:bold 3rem/4rem "Arial";color:#ddf0ff;}
+       .pr1{font-size: 0.86rem; padding-top: 0.4rem;}
+       .pws{font-size: 0.92rem;}
+    </style>
+</head>
+<body ontouchstart >
+
+
+<!--旅游产品展示-->
+<div class="ub ub-ver ub-ac lvcp luckbox">
+    <div class="ub ub-ac ub-pc title">悦美啦 · 幸运奖</div>
+    <div class="fbt"><span>当前总数</span></div>
+    <div class="ub ub-ac ub-pc pws" id="dataNums"></div>
+    <ul id="contentid">
+		
+    </ul>
+</div>
+
+<!--底部导航-->
+<div class="footnav">
+    <ul class="ub">
+        <li  class="ub-f1" ><div class="pos"><a href="javascript:locationUrl('../index.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe61f;</em><span>首页</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>购物车</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe605;</em><span>分享</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>消息</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('share_center.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe62d;</em><span>我的</span></a></div>  </li>
+    </ul>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/index.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script>
+
+//banner
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    slidesPerView: 1,
+    paginationClickable: true,
+    loop: true
+});
+
+
+function getListLuck(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getListLuck.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var str='';
+				var d = res.data.list;
+				var pid;
+				$.each(d,function(k,v){
+					if(k==3){
+						pid=65;
+					}else{
+						pid=38;
+					}
+					str+='<li><a href="javascript:locationUrl(\'show_goods2.html?id='+pid+'&types='+v.id+'&nums='+v.sale_num+'\',false);" ><div class="img"><img src="'+API_ROOT+v.thumb+'" /> </div>'+
+						'<div class="ub ub-ac pr1"><div class="ub-f1"><span>可购买次数:'+v.buy_num+''+
+						'<i>&nbsp;&nbsp;销量：'+v.sale_num+'</i></div></a></li>';
+				})
+				
+				$("#contentid").html(str);
+				
+				$(function(){
+					$("#dataNums").rollNum({
+						deVal:res.data.total
+					});
+
+				});
+				
+			}
+		},
+	});
+}getListLuck();
+
+
+					
+
+
+
+
+</script>
+
+
+</html>
+
+<script>
+function noChance(){
+	$.toast('没有购买机会','cancel');
+	
+	return false;
+}
+</script>

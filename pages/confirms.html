@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>订单确认</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--收货地址-->
+
+
+<div class="shadd">
+    <a href="javascript:;" onclick="selectAddress();" class="ub ub-ac">
+        <div class="ub-f1 sleft" id="addressid"> 
+           
+        </div>
+        <em class="iconfont">&#xe625;</em>
+    </a>
+</div>
+
+<!--添加地址，未设置默认地址时显示-->
+<span id="addid">
+
+</span>
+
+<!--订单信息-->
+<div class="ordermes">
+    <div class="ub ub-ac title"><h4>订单信息</h4></div>
+	<span id="contentid">
+	
+	</span>
+</div>
+
+<!--
+<div class="olist">
+    <a href="#" class="ub ub-ac"><h4>配送方式</h4><input class="ub-f1" id="mobile" type="text" value="包邮"><em class="iconfont">&#xe625;</em></a>
+</div>
+-->
+
+<div class="notice1">
+备注：单品满5件包邮，一折特价商品除质量问题外，不予退换货！
+</div>
+
+
+	<div class="txfs">
+		<div class="ub ub-ac txtop">请选择提货方式</div>
+		<div id="txfs">
+			<div class="ub ub-ac wxpay on" lan="10"> <div class="zfsm ub-f1"><h3>自提</h3><i>请自行去我司或店里取商品</i></div><b></b></div>
+			<div class="ub ub-ac wxpay" lan="20"> <div class="zfsm ub-f1"><h3>快递</h3><i>支持"三通一达"等常见快递（包邮）</i></div><b></b></div>	
+		</div>
+	</div>
+
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+<div class="ofooter">
+    <div class="ub ofarea">
+        <div class="ub-f1 ub ub-ac ub-pe left" id="amountid">
+			
+		</div>
+        <a href="javascript:;" onclick="confirm_share();" class="ub ub-ac ub-pc btn"><span>提交订单</span></a>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+
+<script>
+
+function getSubCartInfo(){
+
+	var cartids = getQueryString(window.location.href,'cartid');
+	if(cartids==null || cartids=='' || cartids=='undefined'){
+		$.toast('关键信息不存在');
+		return false;
+	}
+	
+	
+	var params = {
+		'cartids':cartids,
+	};
+	
+	var aid = getQueryString(window.location.href,'aid');
+	
+	if(aid!=null || aid!=='' || aid!=='undefined'){
+		params['aid'] = aid;
+	}
+	myHttp({
+		url: urls.getSubCartInfo.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var goods_list = res.data.goods_list;
+				var str='';
+				var address = res.data.address;
+				var strs = '';
+				var ss='';
+				$.each(goods_list,function(k,v){
+					str+='<div class="ub ordernr"><div class="img"><img src="'+API_ROOT+v.thumb+'" /> </div><div class="ub-f1 oright">'+
+						'<div class="ub ub-ac otxt1"><b class="ub-f1">'+v.title+'</b><span>&yen;'+v.price+'</span></div>'+
+						'<div class="ub ub-ac otxt2"><span class="ub-f1">类型：'+v.catname+'</span><i>×'+v.cart_nums+'</i></div>'+
+						'</div></div>';
+				})
+				
+				$("#amountid").html('<em>共'+res.data.total_num+'件，总计:</em><span>￥'+res.data.total_amount+'</span>');
+				
+				if(address==null || address=='' || address=='undefined'){
+					$("#addid").html('<div class="olist"><a href="" class="ub ub-ac"><h4 class="ub-f1">添加收货地址</h4><em class="iconfont">&#xe625;</em></a></div>')
+				}
+			
+				if(address.isdefault==1){
+					ss='<i class="ub ub-ac ub-pc">默认</i>';
+				}else{
+					ss='';
+				}
+				
+				strs='<div class="ub ub-ac snametel"><h4>'+address.name+'</h4><span class="ub-f1">'+address.mobile+'</span>'+
+					''+ss+'</div><div class="address">'+address.name+address.area+'</div>';
+				$("#addressid").html(strs);
+				$("#contentid").html(str);
+				
+			}
+		},
+	});
+
+
+}
+
+getSubCartInfo();
+
+
+$("#txfs").find(".wxpay").click(function(){
+	
+	$(this).addClass("on").siblings().removeClass("on");
+	
+	var types = $(this).attr('lan');
+
+	if("{$isres}"==true && "{$member_info['agent_level']}" < 8 ){
+		if(types==20 && "{$num}" < 5 ){
+			$("#amountid").html("￥"+"{$total_num2}");
+			$("#msgid").html("邮费{$express_num}元");
+		}else{
+			$("#amountid").html("￥"+"{$total_num1}");
+			$("#msgid").html("");
+		}
+	}
+	
+})
+
+    $("#mobile").picker({
+        title: "选择配送方式",
+        cols: [
+            {
+                textAlign: 'center',
+                values: ['包邮', '邮资到付']
+            }
+        ],
+        onChange: function(p, v, dv) {
+            console.log(p, v, dv);
+        },
+        onClose: function(p, v, d) {
+            console.log("close");
+        }
+    });
+	
+
+
+
+function confirm_share(){
+
+	var params = {};
+	
+	myHttp({
+		url: urls.subOrderCheck.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code != 200) {
+				return false;
+			}else{
+			
+				var is_buy = res.data.is_buy;
+				var parent_info = res.data.parent_info;
+				if(is_buy=="1"){
+					var ss = parent_info.nickname;
+					var name = parent_info.user_name;
+					var mid = parent_info.mid;
+					var msg='';
+					if(name==''||name==null){
+						msg = '是否确认"'+ss+'"为您的分享人?';
+					}else{
+						msg = '是否确认"'+ss+'['+name+']'+'"为您的分享人?';
+					}
+					if(mid==''||mid==null){
+						msg = '您还没有设置直接分享人，是否立即去设置？';
+					}
+					$.confirm({
+						  title: '提示',
+						  text: msg,
+						  onOK: function () {
+							 if(mid==''||mid==null){
+								confirm_tian();
+							 }else{
+								goBuy();
+							 }
+						},
+						
+						onCancel: function () {
+							confirm_tian();
+						}
+					});
+				}else{
+					goBuy();
+				}
+			
+			
+			}
+		},
+	});
+	
+	
+	
+	
+}
+
+function confirm_tian(){
+	$.prompt("请输入上级代理人ID", function(text) {
+		var check = /^(([1-9]{1}[\d]*)|0)(\.[\d]{1,2})?$/;
+        if(!check.test(text)){
+            $(this).val('');
+			return false
+        }
+		if(text==''||text==null){
+			return;
+		}
+		//alert(text);return;
+		
+		
+		
+		var params = {
+				'uid':"{$member_info['mid']}",
+				'parent_id':text,
+			};
+		
+		myHttp({
+			url: urls.setUserAgent.path,
+			headers:{'accessToken':accessToken},
+			params: params,
+			success: function (res) { 
+				$('.loading').hide();
+				if (res.code == 200) {
+					window.location.reload();
+				}
+			},
+		});
+		
+		
+		
+	}, function() {
+	  //点击取消后的回调函数
+	});
+}
+
+
+
+function selectAddress(){
+	var id = getQueryString(window.location.href,'cartid');
+	locationUrl('choose_address.html?id='+id+"&type=1",true);
+}
+
+function goBuy(){
+
+	var take_type = $("#txfs").find(".on").attr('lan');
+	var catids = getQueryString(window.location.href,'cartid');
+	var aid = getQueryString(window.location.href,'aid');
+	
+	var params = {
+		'catids':catids,
+		'aid':aid,
+		'distribution':take_type,
+	};
+	
+	myHttp({
+		url: urls.placeCartOrder.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				locationUrl('account.html?order_id='+res.data.order_id,true);
+			}
+		},
+	});
+	
+	
+	/*
+	$.ajax({
+		type:'post',
+		dataType:'json',
+		url:"{:U('Center/placeCartOrder')}",
+		data:{
+			'goods_id':"{$pids}",
+			'address_id':"{$address_id}",
+			'aid':"{$aid}",
+			'distribution':take_type,
+		},
+		beforeSend:function(){
+			$.showLoading();
+		},
+		success:function(data){
+			$.hideLoading();
+			if(data.ret==2){
+				$.toast('下单成功');
+				window.location.href= "/index.php?m=Center&a=account&order_id="+data.order_id;
+			}else if(data.ret==3){
+				
+				$.confirm({
+					  title: '提示',
+					  text: '您还没有完善省市信息，是否立即前往个人中心？',
+					  onOK: function () {
+						window.location.href= "/index.php?m=User&a=my_data";
+					},
+					
+					onCancel: function () {
+						
+					}
+				});
+				
+			}else{
+				setTimeout($.hideLoading(),1800);
+				$.toast(data.msg,"cancel");
+			}
+			
+		},
+		error:function(){
+			$.toast("请求错误",'');
+		},
+	});
+	*/
+}
+</script>
+
+
+
+
+</html>

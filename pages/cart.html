@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>购物车</title>
+</head>
+<body ontouchstart class="bg-gray">
+<?php $totals = 0;?>
+<form action="{:U('User/confirms')}" method="post" id="subBtn">
+<div class="gwc">
+    <div class="gwclist" id="cartModule">
+	
+    </div>
+</div>
+<input type="hidden" name="pids">
+</form>
+
+<div class="cbottom">
+    <div class="ub ub-ac qjs">
+        <div class="ub ub-ac qcheck"><em class="all"></em>全选</div>
+       <!-- <div class="ub ub-ac ub-f1 price">合计：<em>￥</em><span id="totalId"><if condition="$isres eq true && $member_info['agent_level'] LT 8">{$total_num}<else />{$total_num}</if></span></div>	-->
+       <div class="ub ub-ac ub-f1 price">合计：<em>￥</em><span id="totalId"></span></div>	
+        <a href="javascript:;" class="ub ub-ac ub-pc count" onclick="subOrder();">提交</a>
+    </div>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+    $("#mobile").picker({
+        title: "选择配送方式",
+        cols: [
+            {
+                textAlign: 'center',
+                values: ['包邮', '邮资到付']
+            }
+        ],
+        onChange: function(p, v, dv) {
+            console.log(p, v, dv);
+        },
+        onClose: function(p, v, d) {
+            console.log("close");
+        }
+    });
+
+	
+	
+	$(".mul").click(function(){
+	if(parseInt($(this).siblings(".result").text()) > 1){
+		var Minus = parseInt($(this).siblings(".result").text()) - 1;
+		var product_id = $(this).attr('lan');
+		$(this).siblings(".result").text(Minus);
+		var atype=$(this).attr('atype');
+		actionCart(Minus,'mul',product_id,atype);
+	}
+	return false;
+});
+$(".add").click(function(){
+	var Plus = parseInt($(this).siblings(".result").text()) + 1;
+	var product_id = $(this).attr('lan');
+	$(this).siblings(".result").text(Plus);
+	var atype=$(this).attr('atype');
+	actionCart(Plus,'plus',product_id,atype);
+	
+	return false;
+});
+
+ $(".checked").click(function(){
+        $(this).parent().parent().toggleClass("cur");
+		var i = $(".gwclist").find("ul").length;
+		var n = $(".gwclist").find(".cur").length;
+		if(n < i){
+			$(".qcheck").find("em").removeClass("all");
+		}else if(n == i){
+			$(".qcheck").find("em").addClass("all");
+		}
+		
+		calculPrice();
+	
+    });
+	
+	 
+        $(".qcheck").click(function(){
+            $(this).find("em").toggleClass("all");
+            if($(this).find("em").hasClass("all")){
+                $(".gwclist").find("ul").addClass("cur")
+            }else{
+                $(".gwclist").find("ul").removeClass("cur")
+            }
+			
+			calculPrice();
+        });
+	
+	function subOrder(){
+		
+		
+		var product_ids = '';
+		var types = '';
+		$("#cartModule ul").each(function(){
+			if($(this).attr('class')=='cur'){
+				product_ids += $(this).attr('lan')+',';
+				types += $(this).attr('len')+',';
+			}
+			
+		});
+	
+		if(product_ids==''){
+		
+			$.toast('请选择要购买商品','cancel');
+				return false;
+			}
+		
+		
+		var params = {
+			'pids':product_ids,
+		};
+		
+		myHttp({
+			url: urls.confirmCart.path,
+			headers:{'accessToken':accessToken},
+			params: params,
+			success: function (res) { 
+				$('.loading').hide();
+				if (res.code == 200) {
+					var d = res.data;
+					locationUrl("confirms.html?cartid="+d,true);
+				}
+			},
+		});	
+		
+		
+	}
+  
+	
+	
+
+function calculPrice(){
+	var product_ids = '';
+	$("#cartModule ul").each(function(){
+		if($(this).attr('class')=='cur'){
+			product_ids += $(this).attr('lan')+',';
+		}
+	});
+
+	$.ajax({
+		type:'post',
+		dataType:'json',
+		url:"{:U('User/calculPrice')}",
+		data:{
+			'pids':product_ids,
+		},
+		beforeSend:function(){
+			//$.showLoading();
+		},
+		success:function(data){
+			
+			if("{$isre_pay}"==true){
+				var numss = (Number(data.total)).toFixed(2);
+				$("#totalId").text(numss);
+			}else{
+				$("#totalId").text(data.total);
+			}
+			
+			
+		},
+		error:function(){
+			$.toast("请求错误，请重试",'cancel');
+		},
+	});
+}
+
+
+
+function getCartinfo(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getCartinfo.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var str='';
+				var d = res.data;
+				var goods_info = d.goods_info;
+				//$(".totalNum").html(d.total_num);
+				//$(".totalPrice").html(d.total_price);
+					
+					
+					
+					$.each(d.goods_info,function(k,v){
+						str+='<ul lan="'+v.id+'" class="cur"><li class="ub ub-ac"><div class="checked" lan="'+v.id+'"></div><div class="img">'+
+							'<a href="#"> <img src="'+API_ROOT+v.img+'" /> </a></div><div class="ub-f1 cartext"><a class="ub title" href="javascript:;"><b class="ub-f1">'+v.name+'</b>'+
+							'<span class="iconfont" onclick="actionCart('+v.num+',"del",'+v.id+',1);">&#xe620;</span></a><p>类型：'+v.catname+'</p>'+
+							'<div class="ub ub-ac cartb"><div class="ub ub-ac num"><span class="ub ub-ac ub-pc mul" lan="'+v.id+'" onclick="mulCarts('+v.product_id+',this,'+v.catid+')">-</span>'+
+							'<span class="ub ub-ac ub-pc result">'+v.num+'</span><span class="ub ub-ac ub-pc add" lan="'+v.id+'" onclick="addCarts('+v.product_id+',this,'+v.catid+')">+</span></div>'+
+							'<div class="ub-f1 price">￥'+v.price+'<span></span></div></div></div></li></ul>';
+							
+					})
+					
+				$("#totalId").html(d.total_price);
+				$("#cartModule").html(str);
+			
+				
+				
+			}
+		},
+	});
+}getCartinfo();
+
+
+function addCarts(product_id,thisd,catid,type){
+	
+	//var product_id = $(thisd).attr('pid');
+		var num = parseInt($(thisd).siblings(".result").text())+1;
+		$(thisd).siblings(".result").text(num);
+		
+		//num,action,product_id,type
+	  actionCart(1,'add',product_id,'goods');
+	  
+	  if(type==1){
+		var num = $(thisd).parent().find(".total1");
+	  }else{
+		var num = $(thisd).parent().find(".total");
+	  }
+		
+      num.text(parseInt(num.text())+1);
+      var totalNum = parseInt($(".totalNum").text());
+      totalNum++;
+      $(".totalNum").text(totalNum);
+      var goods_price = parseFloat($(thisd).parent().parent().find(".sl").text());
+	  if(catid==3){
+		  //goods_price = goods_price*0.1;
+		  //goods_price = Number(goods_price*0.1);
+	  }
+	  
+      //$(".totalPrice").text(parseFloat($(".totalPrice").text())+goods_price);
+
+	  
+	  
+      if(parseInt(num.text()) >= 1){
+        $(thisd).parent().find(".mul").removeClass("dhide");
+        $(thisd).parent().find(".total").removeClass("dhide");
+        $(".dfooter").addClass("on");
+      }
+	
+	
+	
+	
+	
+ }
+ 
+
+  function mulCarts(product_id,thisd,catid,type){
+	  
+		if(type==1){
+			var num = $(thisd).parent().find(".total1");
+		}else{
+			var num = $(thisd).parent().find(".total");
+		}
+      
+		var num = parseInt($(thisd).siblings(".result").text())-1;
+		$(thisd).siblings(".result").text(num);
+		
+		actionCart(1,'mul',product_id,'goods');
+		
+      if(parseInt(num.text()) > 1){
+        num.text(parseInt(num.text())-1);
+        var totalNum = parseInt($(".totalNum").text());
+        totalNum--;
+        //alert(parseInt(num.text()));
+        $(".totalNum").text(totalNum);
+        var goods_price = parseFloat($(thisd).parent().parent().find(".sl").text());
+        $(".totalPrice").text(parseFloat($(".totalPrice").text())-goods_price);
+        if(parseInt($(".totalNum").text()) == 0){
+          $(".dfooter").removeClass("on");
+        }
+      }else if(parseInt(num.text()) == 1) {
+        num.text(parseInt(num.text())-1);
+        var totalNum = parseInt($(".totalNum").text());
+        totalNum--;
+        //alert(parseInt(num.text()));
+        $(".totalNum").text(totalNum);
+        var goods_price = parseFloat($(thisd).parent().parent().find(".sl").text());
+        $(".totalPrice").text(parseFloat($(".totalPrice").text())-goods_price);
+        $(thisd).parent().find(".mul").addClass("dhide");
+        $(thisd).parent().find(".total").addClass("dhide");
+        if(parseInt($(".totalNum").text()) == 0){
+          $(".dfooter").removeClass("on");
+        }
+        num.text("0");
+      }else{
+
+        num.text("0");
+      }
+    
+  }
+
+function actionCart(num,action,product_id,type){
+		//$("#urlId").attr('href','/index.php?m=Center&a=cart')
+		
+		
+		var params = {
+				'goods_id':product_id,
+				'num':num,
+				'action':action,
+				'type':type
+			};
+		
+		myHttp({
+			url: urls.actionCart.path,
+			headers:{'accessToken':accessToken},
+			params: params,
+			success: function (res) { 
+				$('.loading').hide();
+				if (res.code == 200) {
+					var d = res.data;
+					$("#totalId").text(d);
+				}
+			},
+		});
+		
+	}
+	
+</script>
+
+
+
+
+</html>

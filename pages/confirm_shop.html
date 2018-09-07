@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>订单确认</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--收货地址-->
+<if condition="$address neq ''">
+<div class="shadd">
+    <a href="address.html" class="ub ub-ac">
+        <div class="ub-f1 sleft">
+            <div class="ub ub-ac snametel"><h4>{$address['name']}</h4><span class="ub-f1">{$address['mobile']}</span><i class="ub ub-ac ub-pc">默认</i></div>
+            <div class="address">{$address['address']}{$address['area']}</div>
+        </div>
+        <em class="iconfont">&#xe625;</em>
+    </a>
+</div>
+</if>
+<!--添加地址，未设置默认地址时显示-->
+<if condition="$address eq ''">
+<div class="olist">
+    <a href="{:U('Center/address_edit')}" class="ub ub-ac"><h4 class="ub-f1">添加收货地址</h4><em class="iconfont">&#xe625;</em></a>
+</div>
+</if>
+<!--订单信息-->
+<div class="ordermes">
+    <div class="ub ub-ac title"><h4>订单信息</h4></div>
+    <div class="ub ordernr">
+        <div class="img"><img src="../images/fxddpic.jpg" /> </div>
+        <div class="ub-f1 oright">
+            <div class="ub ub-ac otxt1"><b class="ub-f1">{$goods_info['title']}</b><span>&yen;{$goods_info['price']}</span></div>
+            <div class="ub ub-ac otxt2"><span class="ub-f1">类型：<if condition="$goods_info['price'] ELT 10000">普通社区店<elseif condition="$goods_info['price'] GT 10000 and $goods_info['price'] ELT 30000" />标准社区店<elseif condition="$goods_info['price'] GT 30000 and $goods_info['price'] ELT 50000" />豪华社区店</if></span><i>×1</i></div>
+        </div>
+    </div>
+</div>
+
+<!--配送方式-->
+<!--
+<div class="olist">
+    <a href="#" class="ub ub-ac"><h4>配送方式</h4><input class="ub-f1" id="psfs" type="text" value="邮资到付"><em class="iconfont">&#xe625;</em></a>
+</div>
+-->
+
+
+<!--社区店信息-->
+<div class="sqxxx">
+    <ul>
+        <li class="ub ub-ac"><h4>经营区域</h4><input type="text" name="area" id="start" class="ub-f1" placeholder="请选择经营区域" value="" /><em class="iconfont">&#xe625;</em></li>
+        <li class="ub ub-ac"><h4>真实姓名</h4><input type="text" name="username" class="ub-f1" placeholder="请输入真实姓名" value="" /><em class="iconfont dhide">&#xe625;</em></li>
+        <li class="ub ub-ac"><h4>手机号码</h4><input type="text" name="mobile" class="ub-f1" placeholder="请输入手机号码" value="" /><em class="iconfont dhide">&#xe625;</em></li>
+        <li class="ub ub-ac"><h4>身份证号</h4><input type="text" name="idcard" class="ub-f1" placeholder="请输入身份证号" value="" /><em class="iconfont dhide">&#xe625;</em></li>
+		<input type="hidden" id="cerFile">
+	</ul>
+</div>
+
+<!--支付方式-->
+<div class="olist">
+    <a href="#" class="ub ub-ac"><h4>支付方式</h4><input class="ub-f1" id="zffs" type="text" value="在线支付"><em class="iconfont">&#xe625;</em></a>
+    <div class="xxhkarea" style="display: none;">
+        <div class="ub ub-ac hkpz">
+            <div class="ub-f1 left">
+                <h4>汇款凭证</h4><p>上传清晰汇款凭证、票据图片</p>
+            </div>
+            <div class="img"><img src="../images/abtn.jpg" id="showImg" /> <form id="uploadimgBtn"><input type="file" name="certificate" onchange="ajaxUpload();" class="uploadimg" /></form></div>
+            <em class="iconfont dhide">&#xe625;</em>
+        </div>
+    </div>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+<div class="ofooter">
+    <div class="ub ofarea">
+        <div class="ub-f1 ub ub-ac ub-pe left"><em>1件，总计：</em><span>&yen;10000</span></div>
+        <a href="javascript:;" class="ub ub-ac ub-pc btn"><span>提交订单</span></a>
+    </div>
+</div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/city-picker.min.js"></script>
+
+<script>
+
+    $("#start").cityPicker({
+        title: "选择所在区域",
+        onChange: function (picker, values, displayValues) {
+            console.log(values, displayValues);
+        }
+    });
+
+    $("#psfs").picker({
+        title: "选择配送方式",
+        cols: [
+            {
+                textAlign: 'center',
+                values: ['邮资到付', '自付']
+            }
+        ],
+        onChange: function(p, v, dv) {
+            console.log(p, v, dv);
+        },
+        onClose: function(p, v, d) {
+            console.log("close");
+        }
+    });
+
+    $("#zffs").picker({
+        title: "选择支付方式",
+        cols: [
+            {
+                textAlign: 'center',
+                values: ['在线支付', '线下汇款']
+            }
+        ],
+        onChange: function(p, v, dv) {
+            console.log(p, v, dv);
+        },
+        onClose: function(p, v, d) {
+            console.log("close");
+            if($("#zffs").val() == "在线支付" ){
+                $(".xxhkarea").hide();
+            }else if($("#zffs").val() == "线下汇款" ){
+                $(".xxhkarea").show();
+            }
+        }
+    });
+	
+	$(".btn").click(function(){
+		var area = $("input[name='area']").val();
+		var username = $("input[name='username']").val();
+		var idcard = $("input[name='idcard']").val();
+		var mobile = $("input[name='mobile']").val();
+		var pay_type= $("#zffs").val();
+		var certificate= $("#cerFile").val();
+		var mobile_reg = /^((13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9}))$/;
+		if($.trim(username)==''){
+			$.toast("请输入真实姓名", "cancel");
+			return false;
+		}
+		if($.trim(mobile)==''){
+			$.toast("请输入手机号码", "cancel");
+			return false;
+		}
+		if($.trim(area)==''){
+			$.toast("请选择地址", "cancel");
+			return false;
+		}
+		if($.trim(idcard)==''){
+			$.toast("请输入身份证号", "cancel");
+			return false;
+		}
+		if(!mobile_reg.test($.trim(mobile))){
+			$.toast("联系电话有误", "cancel");
+			return false;
+		}
+		var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;  
+		if(reg.test(idcard) === false){
+			$.toast("身份证号有误", "cancel");	
+			return  false;  
+		} 
+		if(pay_type=='线下汇款'){
+			if(certificate==''){
+				$.toast("请上传汇款凭证", "cancel");
+				return false;
+			}
+		}
+		$.ajax({
+			type:'post',
+			dataType:'json',
+			url:"{:U('Center/applyUpgrade')}",
+			data:{
+				'goods_id':"{$goods_id}",
+				'address_id':"{$address_id}",
+				'aid':"{$aid}",
+				'username':username,
+				'mobile':mobile,
+				'area':area,
+				'idcard':idcard,
+				'pay_type':pay_type,
+				'certificate':certificate
+			},
+			beforeSend:function(){
+				$.showLoading();
+			},
+			success:function(data){
+				$.showLoading();
+				if(data.ret==2){
+					$.toast('提交成功');
+					if(data.pay_type==2){
+						window.location.href= "/index.php?m=Center&a=account&order_id="+data.order_id;
+					}else{
+						window.location.href= "{:U('Center/apply_success')}";
+					}
+					
+				}else{
+					setTimeout($.hideLoading(),3000);
+					$.toast(data.msg,"cancel");
+				}
+				
+			},
+			error:function(){
+				$.toast("请求错误",'');
+			},
+		});
+})
+
+
+function ajaxUpload(){
+       var formData = new FormData($("#uploadimgBtn")[0]);
+       $.ajax({
+            type: "POST",
+            data:formData,
+            autoSubmit: false,
+            url: "{:U('Center/ajaxUploadImg')}",
+            enctype: 'multipart/form-data',
+            async: false,
+            dataType:'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+        success: function (data) {
+			$.toast(data.msg);
+           if(data.ret==2){
+			   $("#showImg").attr('src',"/{$uploadpath}"+data.info.certificate.savename);
+			   $("#cerFile").val('');
+			   $("#cerFile").val("/{$uploadpath}"+data.info.certificate.savename);
+           }
+        }
+    });
+}
+</script>
+
+
+
+
+</html>

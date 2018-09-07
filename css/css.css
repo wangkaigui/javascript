@@ -1,0 +1,35 @@
+/*关于我们*/
+.container{width: 96%; margin: 5% 2%; min-height: 18em; color: #333333; line-height: 1.5em; font-family: "Microsoft yahei"}
+.container .arlTit{font-size: 1.6em; line-height: 1.3em;}
+.container .arlInfo{ line-height: 1.5em; color: #999; margin:0.4em 0;}
+.container .arlInfo span{margin-right: 0.8em;}
+
+.container img{width: 100%; height: auto;}
+.container .arlImg span{display: block; text-align: center; color: #999; line-height: 1.5em;}
+
+.shareArea{width: 100%; min-height: 6em; border-top: 1px solid #dadada; margin-top: 3em;}
+.shareTop{width: 3em; height: 2em; text-align: center; background-color: #f4f4f4; color: #999999; margin: -0.5em auto 0 auto;}
+.shareMid{margin-top: 1em; width: 100%; text-align: center; height: auto; }
+.shareMid ul{display: inline-block;}
+.shareMid ul{_display:block;}
+.shareMid ul li{float: left; width: 4em; height: auto; margin: 0 0.8em; text-align: center;}
+.shareMid ul li span{display: block;}
+.shareMid ul li a{color: #999999;}
+.shareMid ul li img{width: 4em; height: 4em;}
+
+
+@-moz-document url-prefix() {/*支持火狐*/
+
+    .Rlist ul li{clear: both;}
+    .RlistTit{float: left; }
+    .RlistImg{float: right;}
+    .RlistTxt i,.RlistTxt span{float: left;}
+}
+
+
+
+@media screen and (max-width:340px){
+    .headerTop,.headerMenu,.banner1,.Recommend,.backTop,.footerMenu,.footer,.container{font-size: 0.9em;}
+
+}
+

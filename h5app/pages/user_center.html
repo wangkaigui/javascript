@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="/statics/default/css/weui.min.css">
+    <link rel="stylesheet" href="/statics/default/css/jquery-weui.css">
+    <link rel="stylesheet" href="/statics/default/css/public.css">
+    <link rel="stylesheet" href="/statics/default/css/ui-box.css">
+    <link rel="stylesheet" href="/statics/default/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/statics/default/css/index.css">
+    <link rel="stylesheet" href="/statics/default/css/swiper.css">
+    <title>我的</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--分享中心头部-->
+<template file="Content/sharehead.php" />
+<!--积分统计-->
+<div class="ub ub-ac jfcount">
+    <ul class="ub">
+        <li class="ub-f1"><div class="ub ub-ver ub-ac ub-pc jfarea"><h5>{$member_info['available_score']}</h5><p class="ub ub-ac ub-pc"><em class="iconfont">&#xe61d;</em><span>累计积分</span></p></div> </li>
+        <li class="ub-f1"><div class="ub ub-ver ub-ac ub-pc jfarea"><h5>{$member_info['unavailable_score']}</h5><p class="ub ub-ac ub-pc"><em class="iconfont">&#xe60c;</em><span>未提现积分</span></p></div> </li>
+        <li class="ub-f1"><div class="ub ub-ver ub-ac ub-pc jfarea"><h5>{$member_info['available_score']}</h5><p class="ub ub-ac ub-pc"><em class="iconfont">&#xe60c;</em><span>可提现积分</span></p></div> </li>
+    </ul>
+</div>
+<!--我的快捷菜单-->
+<div class="mynav">
+    <ul>
+        <li><a href="{:U('User/my_order')}" class="ub ub-ac"><i class="wddd iconfont">&#xe64f;</i><h4 class="ub-f1">我的订单</h4><em class="iconfont">&#xe625;</em></a> </li>
+        <li><a href="#" class="ub ub-ac"><i class="fxwz iconfont">&#xe609;</i><h4 class="ub-f1">分享文章</h4><em class="iconfont">&#xe625;</em></a> </li>
+        <li><a href="/index.php?a=lists&catid=14" class="ub ub-ac"><i class="gwxz iconfont">&#xe652;</i><h4 class="ub-f1">购物须知</h4><em class="iconfont">&#xe625;</em></a> </li>
+        <li><a href="{:U('User/my_collect')}" class="ub ub-ac"><i class="fxwz iconfont">&#xe742;</i><h4 class="ub-f1">我的收藏</h4><em class="iconfont">&#xe625;</em></a> </li>
+    </ul>
+</div>
+<div class="mynav">
+    <ul>
+        <li><a href="{:U('User/my_data')}" class="ub ub-ac"><i class="wdzl iconfont">&#xe67c;</i><h4 class="ub-f1">我的资料</h4><em class="iconfont">&#xe625;</em></a> </li>
+    </ul>
+</div>
+
+<!--底部导航-->
+<template file="Content/menu.php" />
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+
+</body>
+<script type="text/javascript" src="/statics/default/js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="/statics/default/js/swiper.min.js"></script>
+<script type="text/javascript" src="/statics/default/js/jquery-weui.min.js"></script>
+
+<script>
+
+
+</script>
+
+
+
+
+</html>

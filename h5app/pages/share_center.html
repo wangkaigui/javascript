@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>个人中心</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--分享中心头部-->
+
+<div class="ub ub-ver ub-ac ub-pc sharebg">
+    <div class="img"><img src="" id="imgid"/> </div>
+    <div class="ub ub-ac ub-pc username"><h5></h5><span>[ID：<span id="uidid"></span>]</span></div>
+    <div class="ufx"><span>我的分享人：</span><span>加入时间：<span id="regid"></span></span></div>
+    <div class="ub ub-ac ub-pc uleve1"> </div>
+</div>
+
+<!--积分统计-->
+<div class="ub ub-ac jfcount">
+    <ul class="ub">
+        <li class="ub-f1"><div class="ub ub-ver ub-ac ub-pc jfarea"><h5 id="balanceid"></h5><p class="ub ub-ac ub-pc"><em class="iconfont">&#xe61d;</em><span>剩余奖励</span></p></div> </li>
+        <li class="ub-f1"><div class="ub ub-ver ub-ac ub-pc jfarea"><h5 id="total_amountid"></h5><p class="ub ub-ac ub-pc"><em class="iconfont">&#xe60c;</em><span>累计奖励</span></p></div> </li>
+       <li class="ub-f1"><div class="ub ub-ver ub-ac ub-pc jfarea"><h5 id="shopbalanceid"></h5><p class="ub ub-ac ub-pc"><em class="iconfont">&#xe60c;</em><span>购物积分</span></p></div> </li>
+    </ul>
+</div>
+
+<!--分享中心菜单-->
+<div class="shareNav">
+    <ul class="ub first">
+        <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('apply_for.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe71a;</div><span>奖励兑换</span> </a></div></li>
+        <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('integral.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe61e;</div><span>奖励明细</span> </a></div></li>
+        <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('pay_logs.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe63c;</div><span>消费记录</span> </a></div></li>
+        <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('order_search.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe7ce;</div><span>幸运查询</span> </a></div></li>
+        <!---{:U('Center/vip_upgrade')}-->
+       <!-- <li class="ub-f1"><div class="snav"><a href="{:U('Center/share_order')}" class="ub ub-ver ub-ac ub-pc"><img src="../images/fxzxlink1.png" /><span>分享订单</span> </a></div></li> -->      
+        
+    </ul>
+    <ul class="ub">
+        
+        <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('my_teams.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe622;</div><span>我的团队</span> </a></div></li>
+        <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('my_data.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe608;</div><span>个人资料</span> </a></div></li>
+        <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('recharge.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe758;</div><span>会员充值</span> </a></div></li>
+		<li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('exchange.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ac ub-pc img fx1 iconfont">&#xe642;</div><span>积分兑换</span> </a></div></li>
+        
+    </ul>
+</div>
+
+<!--订单统计-->
+<div class="orderd">
+   <ul class="ub">
+      <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('my_order.html?st=10',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ver ub-ac ub-pc img iconfont">&#xe895;<em class="ub ub-pc" id="order1">0</em></div><span>待付款</span></a></div></li>
+      <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('my_order.html?st=20',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ver ub-ac ub-pc img iconfont">&#xe884;<em class="ub ub-pc" id="order2">0</em></div><span>待发货</span></a></div></li>
+      <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('my_order.html?st=30',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ver ub-ac ub-pc img iconfont">&#xe885;<em class="ub ub-pc" id="order3">0</em></div><span>待收货</span></a></div></li>
+      <li class="ub-f1"><div class="snav"><a href="javascript:locationUrl('my_order.html',false);" class="ub ub-ver ub-ac ub-pc"><div class="ub ub-ver ub-ac ub-pc img iconfont">&#xe89a;<em class="ub ub-pc" id="order4">0</em></if></div><span>我的订单</span></a></div></li>
+   </ul>
+</div>
+
+<!--teamyj-->
+<div class="teamyj on">
+   <div class="ub ub-ac teambox"><em class="iconfont">&#xe622;</em><span class="ub-f1">我的直推</span><i id="totalid"></i></div>
+</div>
+<div class="teamd" style="display:none;">
+    <table>
+	   <tr class="ttop"><th>头像</th><th class="tname">昵称</th><th>业绩</th></tr>
+			
+	</table>
+</div>
+<div class="teamyj">
+  <div class="ub ub-ac teambox"><em class="iconfont">&#xe936;</em><span class="ub-f1">团队</span><i id="totalsid"></i></div>
+</div>  
+
+<!--底部导航-->
+<div class="footnav">
+    <ul class="ub">
+        <li  class="ub-f1" ><div class="pos"><a href="javascript:locationUrl('../index.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe61f;</em><span>首页</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('cart.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>购物车</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('qr_code.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe605;</em><span>分享</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('message.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>消息</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('share_center.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe62d;</em><span>我的</span></a></div>  </li>
+    </ul>
+</div>
+
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+
+function getMemberInfo(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getMemberInfo.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data;
+				
+				$("#imgid").attr('src',d.userpic);
+				$("#balanceid").html(d.balance);
+				$("#regid").html(d.regtime);
+				$("#uidid").html(d.mid);
+				$("#shopbalanceid").html(d.shop_balance);
+				$(".uleve1").html(d.agent_name);
+				
+				
+			}
+		},
+	});
+	
+}getMemberInfo();
+
+
+function getShareCentre(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getShareCentre.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data.list;
+				var str='';
+				
+				$.each(d,function(k,v){
+					str+='<tr><td class="tximg"><img src="'+v.userpic+'" /></td><td>'+v.nickname+'</td><td></td></tr>';
+				})
+				
+				$("table tr:last").html(str);
+				$("#total_amountid").html(res.data.total_amount);
+				$("#totalsid").html(res.data.totals+' 积分');
+				$("#totalid").html('伙伴人数：'+res.data.counts+'人 &gt;');
+				
+				$("#order1").html(res.data.orderArr[1]);
+				$("#order2").html(res.data.orderArr[2]);
+				$("#order3").html(res.data.orderArr[3]);
+				$("#order4").html(res.data.orderArr[0]);
+				
+			}
+		},
+	});
+	
+}getShareCentre();
+
+
+
+  $(function(){
+	  
+	  $(".teamyj").click(function(){
+		  if($(this).hasClass("on")){
+			  $(this).next().toggle();
+		  }else{
+			  $(this).prev().hide();
+		  }
+	  });
+	  
+  })
+
+</script>
+
+
+
+
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>编辑地址</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--编辑地址-->
+<div class="editadd">
+    <ul>
+        <li class="ub ub-ac"><h4>收货人姓名</h4><input type="text" class="ub-f1" placeholder="请输入姓名" value="" name="name" /> </li>
+        <li class="ub ub-ac"><h4>手机号码</h4><input type="text" class="ub-f1" placeholder="请输入正确的手机号" value="" name="mobile" /> </li>
+        <li class="ub ub-ac"><h4>选择区域</h4><input type="text" id="start" class="ub-f1" placeholder="请选择地址" value="" name="address" /> </li>
+        <li class="ub ub-ac"><h4>详细地址</h4><input type="text" class="ub-f1" placeholder="请输入详细地址" value=""  name="area"/> </li>
+    </ul>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+<!--新增地址-->
+<a href="javascript:;" onclick="saveAddress();" class="ub ub-ac ub-pc tjadd">提交</a>
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/city-picker.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+$("#start").cityPicker({
+	title: "选择所在区域",
+	onChange: function (picker, values, displayValues) {
+		console.log(values, displayValues);
+	}
+});
+
+
+function getAddressInfoById(id){
+	$('.loading').show();
+	var params = {'id':id};
+	myHttp({
+		url: urls.getAddressInfoById.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) {
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data;
+				$("input[name='address']").val(d.address);
+				$("input[name='area']").val(d.area);
+				$("input[name='name']").val(d.name);
+				$("input[name='mobile']").val(d.mobile);
+			}
+		},
+	});
+}
+var aid = getQueryString(window.location.href,'aid');
+if(aid!=null && aid!='' && aid!='undefined'){
+	getAddressInfoById(aid);
+}
+
+function saveAddress(){
+	var address = $("input[name='address']").val();
+	var area = $("input[name='area']").val();
+	var name = $("input[name='name']").val();
+	var mobile = $("input[name='mobile']").val();
+	var aid = getQueryString(window.location.href,'aid');
+	/*var obj = $('input:checkbox:first').prop('checked');
+	if(obj==true){
+		isdefault=1;
+	}else{
+		isdefault=0;
+	}
+	*/
+	var mobile_reg = /^((13[0-9]{9})|(15[0-9]{9})|(17[0-9]{9})|(18[0-9]{9}))$/;
+	if($.trim(name)==''){
+		$.toast("请输入姓名", "cancel");
+		return false;
+	}
+	if($.trim(mobile)==''){
+		$.toast("请输入联系电话", "cancel");
+		return false;
+	}
+	if($.trim(address)==''){
+		$.toast("请选择地址", "cancel");
+		return false;
+	}
+	if($.trim(area)==''){
+		$.toast("请输入详细地址", "cancel");
+		return false;
+	}
+	if(!mobile_reg.test($.trim(mobile))){
+		$.toast("联系电话有误", "cancel");
+		return false;
+	}
+	//$("#saveBtn").submit();
+	
+	var params = {
+		'name':name,
+		'mobile':mobile,
+		'address':address,
+		'area':area,
+	};
+	
+	if(aid!=null && aid!='' || aid!='undefined'){
+		params['aid'] = aid;
+	}
+	
+	myHttp({
+		url: urls.addressEdit.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var aid = res.data;
+				var id = getQueryString(window.location.href,'id');
+				var type = getQueryString(window.location.href,'type');
+				if(id!=null && id!='' && id!='undefined'){
+					if(type!=null && type!='' && type!='undefined'){
+						locationUrl('confirms.html?cartid='+id+"&aid="+aid+"&type="+type,true);
+					}else{
+						locationUrl('confirm_order.html?id='+id+"&aid="+aid,true);
+					}
+				}else{
+					locationUrl('choose_address.html',false);
+				}
+				
+				
+			}else{
+				$.toast(res.msg,'cancel')
+			}
+		},
+	});
+
+}	
+</script>
+
+
+
+
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>兑换购物积分</title>
+</head>
+<body ontouchstart style="background-color:#f4f4f4;">
+
+<div class="ub ub-ac extit">
+   <h4>可兑换积分：<span id="avaid"></span></h4>
+   <b class="ub-f1"></b>
+</div>
+<div class="ub ub-ac extit mart">
+   <h4>兑换积分数：</h4>
+   <input class="jfnum ub-f1" type="tel" placeholder="输入兑换积分数量" id="amount"/>
+</div>
+<div class="ub ub-ac extit">
+   <h4>可获得购物积分：</h4>
+   <b class="ub-f1 hdjf" id="actotal">0</b>
+</div>
+<div class="ub ub-ac dhms">
+   <p>*奖励积分兑换购物积分将消耗本次兑换数量的3%奖励积分</p>
+</div>
+<input type="hidden" id="balanceid">
+<a href="javascript:;" class="ub ub-ac ub-pc dhbtn" onclick="confirmSub()">立即兑换</a>
+<input type="hidden" id="trueAmount" value="">
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+function getMemberInfo(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getMemberInfo.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data;
+				
+				
+				$("#avaid").html(d.balance);
+				$("#balanceid").val(d.balance);
+				
+			}
+		},
+	});
+	
+}getMemberInfo();
+
+
+
+$('#amount').keyup(function(){
+	var check = /^(([1-9]{1}[\d]*)|0)(\.[\d]{1,2})?$/;    //金额匹配正则
+	var balance = $('#balanceid').val();
+	var amount = $(this).val();
+	if(!check.test($(this).val())){
+		$.toast('只能输入数字,最多两位小数','cancel');
+		$(this).val('');
+		return false
+	}else if(Number($(this).val())>Number(balance)){
+		$.toast('输入金额不能大于可兑换金额','cancel');
+		$(this).val('');
+		return false;
+	}
+	
+	var params = {
+		'amount':amount,
+	};
+	
+	myHttp({
+		url: urls.ajaxGetAtotal.path,
+		//headers:{'jd-token':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				
+				$("#actotal").html(res.data);
+				$("#trueAmount").val(res.data);
+				
+			}
+		},
+	});
+	
+	
+});
+
+
+function confirmSub(){
+	var amount = $("#amount").val();
+	var trueAmount = $("#trueAmount").val();
+	var balance = $('#balanceid').val();
+	var check = /^(([1-9]{1}[\d]*)|0)(\.[\d]{1,2})?$/;
+	if(!check.test(amount)){
+		$.toast('请输入兑换金额','cancel');
+		$(this).val('');
+		return false
+	}else if(Number(amount)>Number(balance)){
+		$.toast('输入金额不能大于可兑换金额','cancel');
+		$(this).val('');
+		return false;
+	}
+	
+	$.confirm({
+		  title: '提示',
+		  text: '您确定消耗'+amount+'奖励积分兑换'+trueAmount+'购物积分？',
+		  onOK: function () {
+			  
+			var params = {
+				'amount':amount,
+			}
+			
+			myHttp({
+				url: urls.exchangeShopBalance.path,
+				//headers:{'jd-token':accessToken},
+				params: params,
+				success: function (res) { 
+					$('.loading').hide();
+					$.toast(res.msg);
+					if (res.code == 200) {
+						
+						locationUrl('share_center.html',false);
+						
+					}else{
+					
+						$.toast('请求失败','cancel');
+						
+					}
+				},
+			});
+			 
+
+		},
+		
+		onCancel: function () {
+			
+		}
+	});
+	
+}
+
+</script>
+
+
+
+
+</html>

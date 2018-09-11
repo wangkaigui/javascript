@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>{$member_info['nickname']}的分享二维码</title>
+</head>
+<body ontouchstart>
+
+<div class="codebg">
+    
+    <div class="ub ub-ac ub-pc ecode"><img src="" id="shareid"/> </div>
+    <div class="ctext1">我是【<span id="nameid"></span>】</div>
+    <div class="ctext1">我为【悦美啦】代言</div>
+    <div class="ctext2"><img src="../images/wz2.png" /></div>
+</div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
+
+<script>
+
+function getMemberInfo(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getMemberInfo.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data;
+				
+				$("#shareid").attr('src',API_ROOT+'/api.php?m=Center&a=qrCode');
+				$("#nameid").html(d.nickname);
+				
+				
+			}
+		},
+	});
+	
+}getMemberInfo();
+
+/*
+wx.config({
+    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: "{$signPackage['appId']}", // 必填，公众号的唯一标识
+    timestamp: "{$signPackage['timestamp']}", // 必填，生成签名的时间戳
+    nonceStr: "{$signPackage['nonceStr']}", // 必填，生成签名的随机串
+    signature: "{$signPackage['signature']}",// 必填，签名，见附录1
+    jsApiList: [
+		'onMenuShareTimeline',
+		'onMenuShareAppMessage',
+		'onMenuShareWeibo',
+		'onMenuShareQZone',
+		'getLocation',
+		'hideMenuItems',
+		'hideOptionMenu',
+		'onMenuShareQQ',
+	] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+});
+wx.hideOptionMenu();
+wx.hideMenuItems({
+    menuList: [] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+});
+
+ wx.ready(function () {
+	wx.onMenuShareTimeline({
+		title: "{$member_info['nickname']}的邀请二维码", // 分享标题
+		link: '{$urls}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+		imgUrl: 'http://{$durl}{$qrcode}', // 分享图标
+		success: function () { 
+			alert('分享成功');
+		},
+		cancel: function () { 
+			// 用户取消分享后执行的回调函数
+			alert('已取消');
+		}
+	});
+	
+	wx.onMenuShareAppMessage({
+		title: "{$member_info['nickname']}的邀请二维码", // 分享标题
+		desc: '这是我的邀请二维码,扫描关注悦美啦即可成为我们的会员', // 分享描述
+		link: '{$urls}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+		imgUrl: 'http://{$durl}{$qrcode}', // 分享图标
+		type: '', // 分享类型,music、video或link，不填默认为link
+		dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+		success: function () { 
+			alert('分享成功');
+		},
+		cancel: function () { 
+			alert('已取消');
+		}
+
+	});
+	
+ });
+
+ */
+ 
+ 
+</script>
+
+
+</html>

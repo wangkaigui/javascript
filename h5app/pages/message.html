@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>消息中心</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<div class="messages">
+    <ul id="contentid">
+		
+
+    </ul>
+</div>
+
+<!--底部导航-->
+<div class="footnav">
+    <ul class="ub">
+        <li  class="ub-f1" ><div class="pos"><a href="javascript:locationUrl('../index.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe61f;</em><span>首页</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>购物车</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe605;</em><span>分享</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>消息</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('share_center.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe62d;</em><span>我的</span></a></div>  </li>
+    </ul>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+//banner
+var swiper = new Swiper('.swiper-container', {
+    pagination: '.swiper-pagination',
+    slidesPerView: 1,
+    paginationClickable: true,
+    loop: true
+});
+
+function getSysteamMessage(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getSysteamMessage.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data.newMsg;
+				var str='';
+				$.each(d,function(k,v){
+					str+='<li><div class="ub ub-ac title"><h5 class="ub-f1">系统消息</h5>'+
+					'<span class="actionNews" ac="read" alt="{$vo.id}"></span></in>'+
+					'<em class="ub ub-ac ub-pc iconfont actionNews" ac="del" alt="{$vo.id}">&#xe620;</em></div>'+
+					'<div class="mxx">'+v.content+'<span>'+v.s_time+'</span></div></li>';
+					
+				})
+				
+				$("#contentid").html(str);
+			
+			}
+		},
+	});
+	
+}getSysteamMessage();
+
+
+$(".actionNews").click(function(){
+	var id=$(this).attr('alt');
+	var action = $(this).attr('ac');
+	if(action=='del'){
+		var msg = '确认删除吗?';
+	}else{
+		var msg = '确认标记为已读？';
+	}
+	$.confirm({
+	  title: '提示',
+	  text: msg,
+	  onOK: function () {
+			
+			$.ajax({
+				type:'post',
+				dataType:'json',
+				url:"{:U('News/actionNews')}",
+				data:{
+					'id':id,
+					'action':action,
+				},
+				beforeSend:function(){
+					$.showLoading();
+				},
+				success:function(data){
+					$.hideLoading();
+					$.toast(data.msg);
+					if(data.ret==2){
+						setTimeout(function(){window.location.href= window.location.href},1500);
+					}
+				},
+				error:function(){
+					$.toast("请求错误",'');
+				},
+			});
+		},
+		onCancel: function () {
+			
+		}
+	
+	});
+});
+
+</script>
+
+
+</html>

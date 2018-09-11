@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+	
+	<link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+	
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <link rel="stylesheet" href="../css/css.css">
+    <title>悦美啦</title>
+</head>
+<body ontouchstart class="bg-gray">
+<div class="ub ub-ac txbanner">
+	<div class="ub-f1 fk1 br">
+        <div class="ub ub-ver ub-ac ub-pc txarea"><em>可兑换奖励（积分）</em><span id="balid"></span></div>
+    </div>
+    <div class="ub-f1 fk1">
+        <div class="ub ub-ver ub-ac ub-pc txarea"><em>累计奖励</em><span></span></div>
+    </div>
+</div>
+
+<form action="{:U('Center/apply_for')}" method="post" id="formBtn">
+	<div class="txfs">
+		<div class="ub ub-ac txtop">请选择兑换方式</div>
+		<div id="txfs">
+			<div class="ub ub-ac wxpay on" lan="30"><img src="../images/txicon2.jpg" /> <div class="zfsm ub-f1"><h3>提现至银联</h3><i>支持工行、建行、农行、招行等银行</i></div><b></b></div>
+		<!--<div class="ub ub-ac wxpay" lan="20"><img src="images/txicon3.jpg" /> <div class="zfsm ub-f1"><h3>提现至支付宝</h3><i>推荐有支付宝账号用户使用</i></div><b></b></div>
+			<div class="ub ub-ac wxpay" lan="10"><img src="images/txicon1.jpg" /> <div class="zfsm ub-f1"><h3>提现至微信钱包</h3><i>推荐安装微信5.0及以上版本的使用</i></div><b></b></div>
+		-->	
+		</div>
+	</div>
+
+	<div class="ub txsm"><em><img src="../images/txms.jpg" /> </em><span class="ub-f1">提交申请审批过程需4-5个工作日(周六、周日除外)，兑换奖励我们将以线下线下方式发放，请及时查看，,谢谢！</span></div>
+	<div class="txzl">
+		<ul>
+			<li class="ub ub-ac"><font style="color:red;">*</font><h3 id="userBtn">姓名</h3><input type="text" class="ub-f1" name="user_name" value="" placeholder="请输入姓名" /></li>
+			<li class="ub ub-ac"><font style="color:red;">*</font><h3 id="accBtn">账号</h3><input type="tel" class="ub-f1" name="account" value="" placeholder="请输入提现账号" /> </li>
+			<li class="ub ub-ac" id="bankBtn" ><font style="color:red;">*</font><h3>开户银行</h3><input type="text" class="ub-f1" name="bank" id="bank" placeholder="请输入开户银行"  /></li>
+			<li class="ub ub-ac" id="resBankBtn"><font style="color:red;">*</font><h3>开户支行</h3><input type="text" name="res_bank" id="res_bank" class="ub-f1" placeholder="请输银行开户支行"  /></li>
+			<li class="ub ub-ac"><font style="color:red;">*</font><h3 id="amountBtn">提现积分</h3><input type="tel" name="amount" id="amount" class="ub-f1" placeholder="请输入您要提现的积分" /><span>积分</span></li>
+			<li class="ub ub-ac"><font style="color:red;">*</font><h3 id="mobileBtn">联系电话</h3><input type="tel" name="mobile" class="ub-f1" value="" placeholder="请输入您的联系电话" /></li>
+		</ul>
+	</div>
+	<input type="hidden" name="apply_type" id="typeBtn" value="30">
+	<input type="hidden" name="user_id" value="">
+	<input type="button" class="ub tjbtn" id="txBtn" value="确认提交" />
+</form>
+
+<input type="hidden" id="balanceid">
+<style>
+.txzl ul li.disCas{left:-1000px; height:0; overflow:hidden;}
+</style>
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+function getMemberInfo(){
+	var params = {};
+	
+	myHttp({
+		url: urls.getMemberInfo.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data;
+				
+				$("#balanceid").val(d.balance);
+				$("#balid").html(d.balance);
+				
+			}
+		},
+	});
+	
+}getMemberInfo();
+
+
+function getHisApplyInfo(){
+
+	myHttp({
+		url: urls.getHisApplyInfo.path,
+		headers:{'jd-token':accessToken},
+		params: {},
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data.bank_apply_log;
+				
+				$("input[name='user_name']").val(d.user_name);
+				$("input[name='account']").val(d.account);
+				$("input[name='mobile']").val(d.mobile);
+				$("#bank").val(d.bank);
+				$("input[name='res_bank']").val(d.res_bank);
+			}
+		},
+	});
+	
+}getHisApplyInfo();
+
+$("#txBtn").click(function(){
+	
+	
+	var type = $("#typeBtn").val();
+
+	var user_name = $("input[name='user_name']").val();
+	var account = $("input[name='account']").val();
+	var amount = $("input[name='amount']").val();
+	var mobile = $("input[name='mobile']").val();
+	var bank = $("#bank").val();
+	var res_bank = $("input[name='res_bank']").val();
+	if(user_name=='' || account=='' || amount=='' || mobile==''){
+		$.toast('必填信息不能为空','cancel');
+		return false;
+	}else if(Number(amount)>30000 || Number(amount)<100){
+			$.toast('每笔提现金额需大于100小于30000','cancel');
+            $(this).val('');
+			return false;
+		}
+	
+	$.showLoading();
+	
+	var params = {
+		'user_name':user_name,
+		'account':account,
+		'amount':amount,
+		'mobile':mobile,
+		'bank':bank,
+		'res_bank':res_bank,
+	}
+	
+	myHttp({
+		url: urls.actionApplyFor.path,
+		//headers:{'jd-token':accessToken},
+		params: params,
+		success: function (res) {
+			$.hideLoading();
+			$('.loading').hide();
+			if (res.code == 200) {
+				locationUrl('apply_success.html',false);
+			}else{
+				$.toast('','cancel')
+			}
+		},
+	});
+	
+
+	//$("#formBtn").submit();
+	
+});
+
+function ajaxGetBank(){
+	$.post("{:U('User/ajaxGetBank')}",'',function(result){
+		
+		var data = eval(result);
+		alert(data);
+		var str='';
+		for(var i=0; i<data.length; i++)  
+		  {  
+			 //str+='{title:'+data[i].bank_name+',value:'+data[i].bank_name+',},'
+			 window.str+=data[i].bank_name;
+			
+		  }
+		  //alert(str);
+		  //return str;
+	});
+}
+
+
+
+myHttp({
+	url: urls.getBankList.path,
+	headers:{'jd-token':accessToken},
+	params: {},
+	success: function (res) { 
+		$('.loading').hide();
+		if (res.code == 200) {
+			banklist = res.data;
+			$("#bank").select({
+				
+				title: "选择银行",
+				items: banklist
+				
+			});
+		}
+	},
+});
+
+
+
+
+
+//提现选项卡
+    $("#txfs").find(".wxpay").click(function(){
+        $(this).addClass("on").siblings().removeClass("on");
+		//10 微信 20 支付宝 30银联
+		var type = $(this).attr('lan');
+		$("#typeBtn").val(type);
+		// userBtn  accBtn bankBtn amountBtn mobileBtn
+		
+		document.getElementById("bankBtn").style.display="none";
+		if(type==10){
+			$("#userBtn").text('微信昵称');
+			$("#accBtn").text('微信账号');
+			$("#bankBtn").addClass('disCas');
+			$("#resBankBtn").addClass('disCas');
+			/*
+			$.toast('暂不支持微信提现方式','cancel');
+			return false;
+			*/
+			
+		$("input[name='user_name']").val("{$wx_apply_log['user_name']}");
+		$("input[name='account']").val("{$wx_apply_log['account']}");
+		$("input[name='mobile']").val("{$wx_apply_log['mobile']}");
+			
+		}else if(type==20){
+			$("#userBtn").text('真实姓名');
+			$("#accBtn").text('账号');
+			$("#bankBtn").addClass('disCas');
+			$("#resBankBtn").addClass('disCas');
+			
+			$("input[name='user_name']").val("{$ali_apply_log['user_name']}");
+			$("input[name='account']").val("{$ali_apply_log['account']}");
+			$("input[name='mobile']").val("{$ali_apply_log['mobile']}");
+			
+		}else if(type==30){
+			$("#userBtn").text('户名');
+			$("#accBtn").text('账户');
+			$("#bankBtn").removeClass('disCas');
+			$("#resBankBtn").removeClass('disCas');
+			
+			$("input[name='user_name']").val("{$bank_apply_log['user_name']}");
+			$("input[name='account']").val("{$bank_apply_log['account']}");
+			$("input[name='mobile']").val("{$bank_apply_log['mobile']}");
+			$("input[name='bank']").val("{$bank_apply_log['bank']}");
+			$("input[name='res_bank']").val("{$bank_apply_log['res_bank']}");
+		}
+		
+    });
+
+$('#amount').keyup(function(){
+		var balance = $("#balanceid").val();
+        var check = /^(([1-9]{1}[\d]*)|0)(\.[\d]{1,2})?$/;    //金额匹配正则
+        if(!check.test($(this).val())){
+			$.toast('只能输入数字,最多两位小数','cancel');
+            $(this).val('');
+			return false
+        }else if(Number($(this).val())>Number(balance)){
+			$.toast('输入不能大于可提现金额','cancel');
+            $(this).val('');
+			return false;
+		}
+    });
+	
+</script>
+
+
+</html>

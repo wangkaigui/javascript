@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>共享空间</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--banner-->
+<div class="gxbanner swiper-container">
+    <div class="swiper-wrapper" id="swiperid">
+		
+    </div>
+    <div class="swiper-pagination"></div>
+</div>
+
+<!--产品展示-->
+<div class="gxkjlist">
+    <ul class="clearfix" id="contentid">
+		
+    </ul>
+</div>
+<!--底部导航-->
+<div class="footnav">
+    <ul class="ub">
+        <li  class="ub-f1" ><div class="pos"><a href="javascript:locationUrl('../index.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe61f;</em><span>首页</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('cart.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>购物车</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('qr_code.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe605;</em><span>分享</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('message.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>消息</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('share_center.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe62d;</em><span>我的</span></a></div>  </li>
+    </ul>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+</body>
+<script type="text/javascript" src="../js/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script>
+
+//banner
+setTimeout(function(){
+	var swiper = new Swiper('.swiper-container', {
+		pagination: '.swiper-pagination',
+		slidesPerView: 1,
+		paginationClickable: true,
+		loop: true
+	});
+},300)
+
+
+function getShareSpace(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getShareSpace.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var str='';
+				var d = res.data;
+				$.each(d,function(k,v){
+					str+='<li><a href="javascript:void (0);"><img src="{$showId.thumb}" /> <span>{$showId.title}</span> </a> </li>';
+				})
+				
+				$("#contentid").html(str);
+				
+			}
+		},
+	});
+}getShareSpace();
+
+//banner图
+function getShareSpaceBanner(){
+	$('.loading').show();
+	var params = {};
+	myHttp({
+		url: urls.getShareSpaceBanner.path,
+		//headers:{'jd-token':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var str='';
+				var d = res.data.thumbs;
+				$.each(d,function(k,v){
+					str+='<div class="swiper-slide"><a href="javascript:;" onclick="locationUrl();"><img src="'+API_ROOT+v.url+'" /></a></div>';
+				})
+				
+				$("#swiperid").html(str);
+				
+			}
+		},
+	});
+}getShareSpaceBanner();
+</script>
+
+
+</html>

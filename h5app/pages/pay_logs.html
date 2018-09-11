@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>消费记录</title>
+</head>
+<body ontouchstart class="bg-gray">
+
+<!--分享中心头部-->
+<div class="ub ub-ver ub-ac ub-pc sharebg1">
+    <div class="shared">
+        <div class="ub ub-ver ub-ac ub-pc circle">
+            <div class="ub ub-ac ub-pc numtitle">剩余奖励</div>
+            <h4 class="ub ub-ac ub-pc counter"></h4>
+            <div class="wtx">累计奖励：<span></span> 分</div>
+        </div>
+    </div>
+    <!--<a href="#" class="txbtn">申请提现</a>-->
+</div>
+
+<span id="contentid">
+
+</span>
+
+<!--底部导航-->
+
+<div class="footnav">
+    <ul class="ub">
+        <li  class="ub-f1" ><div class="pos"><a href="javascript:locationUrl('../index.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe61f;</em><span>首页</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/cart.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>购物车</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/qr_code.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe605;</em><span>分享</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/message.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe7c9;<i></i></em><span>消息</span></a></div>  </li>
+        <li class="ub-f1"><div class="pos"><a href="javascript:locationUrl('pages/share_center.html',false);" class="ub ub-ver ub-ac ub-pc"><em class="iconfont">&#xe62d;</em><span>我的</span></a></div>  </li>
+    </ul>
+</div>
+
+<div style="width: 100%; height: 3.5rem;"></div>
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/jquery-weui.min.js"></script>
+<script src="../js/jquery.waypoints.min.js"></script>
+<script type="text/javascript" src="../js/jquery.countup.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+<script type="text/javascript">
+    $('.counter').countUp();
+	
+	
+function getPayLogs(){
+	var params = {};
+	
+   
+	myHttp({
+		url: urls.getPayLogs.path,
+		headers:{'accessToken':11},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data.trade_log;
+				var datas = res.data.datas;
+				var strs = '';
+				var str = '';
+				var str1 = '';
+				var str2 = '';
+				$.each(d,function(k,v){
+				
+						if(v.month!='' && v.month!=undefined){
+							str+='<div class="tdate"><span>'+v.month+'</span></div><div class="txjl"><ul>';
+						}
+						
+						str+='<li class="ub ub-ver ub-pc"><div class="ub ub-ac jftxt1"><p class="ub ub-ac ub-f1"><span>说明</span><i>'+
+							'[ 已完成 ] </i></p><em class="jia">-888</em></div><div class="ub ub-ac jftxt2"><div class="ub ub-ac ub-f1 user">'+
+							'<img src="" /><span></span><em>（会员等级）</em></div><div class="timed">时间</div></div></li>';
+							
+						//alert(v.month);
+						if((v.month!=undefined && datas[k+1]!='' && v.month!='') && k!=0){
+							str+='</ul></div>';
+						}
+						
+						//strs +=str+str1+str2;
+						
+					})
+				
+				$("#contentid").html(str);
+				
+				
+			}
+		},
+	});
+	
+}getPayLogs();
+</script>
+
+
+
+</html>

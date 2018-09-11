@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html class="um landscape min-width-240px min-width-320px min-width-480px min-width-768px min-width-1024px">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/public.css">
+    <link rel="stylesheet" href="../css/ui-box.css">
+    <link rel="stylesheet" href="../iconfont/iconfont.css">
+    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/swiper.css">
+    <title>幸运查询</title>
+	<style>
+	.imgDetail h4{width:100%; height:3rem; line-height:3rem; text-align:center; background-color:#ff6600; color:#fff; font-size:1rem;}
+	.imgDetail table{border-left:1px soild #eee; border-top:1px soild #eee;}
+	.imgDetail th,.imgDetail td{line-height:1.5rem; font-size:0.75rem; color:#666;}
+	.imgDetail th{background-color:#eee;  padding:10px 0;}
+	.imgDetail td{background-color:#fafafa; padding:10px 0; text-align:center;}
+
+	</style>
+</head>
+<body ontouchstart >
+
+
+<div class="imgDetail">
+  <h4>幸运查询</h4>
+  <span id="contentid">
+  
+  </span>
+</div>
+
+
+
+</body>
+<script type="text/javascript" src="../js/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src="../js/jquery.SuperSlide.2.1.1.js"></script>
+<script type="text/javascript" src="../js/swiper.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+
+
+
+			
+		
+		
+<script>
+
+function getOrderSearch(){
+	var params = {};
+	
+   
+	myHttp({
+		url: urls.getOrderSearch.path,
+		headers:{'accessToken':accessToken},
+		params: params,
+		success: function (res) { 
+			$('.loading').hide();
+			if (res.code == 200) {
+				var d = res.data.data;
+				var str = '';
+				
+				if(d!='' && d!=null){
+					str='<table width="100%"><tr><th width="30%">昵称</th><th width="30%">电话号码</th><th width="15%">排序</th><th width="20%">状态</th></tr>';
+					$.each(d,function(k,v){
+						str+='<tr><td>'+v.truename+'</td><td>'+v.mobile+'</td>'+
+						'<td>'+v.order_sort+'</td><td>'+v.order_status+'</td></tr>';	
+					})
+					str+='</table>';
+					$("#contentid").html(str);
+				}else{
+					$("#contentid").html('<p>暂无购买信息</p>');
+				}
+				
+			
+				
+				
+				
+			
+				
+			}
+		},
+	});
+	
+}getOrderSearch();
+
+
+</script>
+
+
+</html>
